@@ -1,0 +1,466 @@
+<!-- /pdf-bookstore/admin-panel/dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - PDF Bookstore</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
+</head>
+
+<body class="admin-dashboard">
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Loading dashboard...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-book-open"></i>
+                    <span class="sidebar-title">Bookstore Admin</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link active">
+                            <i class="fas fa-chart-line"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="books.html" class="nav-link">
+                            <i class="fas fa-book"></i>
+                            <span class="nav-text">Book Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="orders.html" class="nav-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="nav-text">Orders</span>
+                            <span class="nav-badge" id="pending-orders-badge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="upload.html" class="nav-link">
+                            <i class="fas fa-upload"></i>
+                            <span class="nav-text">Upload Books</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="analytics.html" class="nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="nav-text">Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="users.html" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span class="nav-text">Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="settings.html" class="nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span class="nav-text">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-divider"></div>
+
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span class="nav-text">View Store</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" id="admin-logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="nav-text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Top Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Dashboard Overview</h1>
+                </div>
+
+                <div class="header-right">
+                    <!-- Real-time Stats -->
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Online Users</span>
+                            <span class="stat-value" id="online-users">--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Today's Sales</span>
+                            <span class="stat-value" id="today-sales">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Admin Profile -->
+                    <div class="admin-profile">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="profile-info">
+                            <span class="profile-name" id="admin-name">Admin</span>
+                            <span class="profile-role">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Quick Stats Cards -->
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number" id="total-books">--</h3>
+                            <p class="stat-label">Total Books</p>
+                            <span class="stat-change positive" id="books-change">
+                                <i class="fas fa-arrow-up"></i>
+                                +0% from last month
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number" id="total-orders">--</h3>
+                            <p class="stat-label">Total Orders</p>
+                            <span class="stat-change positive" id="orders-change">
+                                <i class="fas fa-arrow-up"></i>
+                                +0% from last month
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number" id="total-revenue">--</h3>
+                            <p class="stat-label">Total Revenue</p>
+                            <span class="stat-change positive" id="revenue-change">
+                                <i class="fas fa-arrow-up"></i>
+                                +0% from last month
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number" id="total-users">--</h3>
+                            <p class="stat-label">Total Users</p>
+                            <span class="stat-change positive" id="users-change">
+                                <i class="fas fa-arrow-up"></i>
+                                +0% from last month
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts Section -->
+                <section class="charts-section">
+                    <div class="chart-row">
+                        <!-- Sales Chart -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Sales Overview</h3>
+                                <div class="chart-controls">
+                                    <select id="sales-period" class="chart-select">
+                                        <option value="7">Last 7 days</option>
+                                        <option value="30" selected>Last 30 days</option>
+                                        <option value="90">Last 90 days</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="sales-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Popular Books Chart -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Popular Books</h3>
+                                <div class="chart-controls">
+                                    <button class="chart-refresh" id="refresh-popular-books">
+                                        <i class="fas fa-refresh"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="popular-books-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-row">
+                        <!-- Revenue Chart -->
+                        <div class="chart-card full-width">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Revenue Analytics</h3>
+                                <div class="chart-controls">
+                                    <div class="chart-legend">
+                                        <span class="legend-item">
+                                            <span class="legend-color" style="background: var(--admin-primary);"></span> Revenue
+                                        </span>
+                                        <span class="legend-item">
+                                            <span class="legend-color" style="background: var(--admin-secondary);"></span> Orders
+                                        </span>
+                                    </div>
+                                    <select id="revenue-period" class="chart-select">
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly" selected>Monthly</option>
+                                        <option value="yearly">Yearly</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenue-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recent Activity & Quick Actions -->
+                <section class="activity-section">
+                    <div class="activity-row">
+                        <!-- Recent Orders -->
+                        <div class="activity-card">
+                            <div class="activity-header">
+                                <h3 class="activity-title">Recent Orders</h3>
+                                <a href="orders.html" class="activity-link">View all</a>
+                            </div>
+                            <div class="activity-content">
+                                <div class="order-list" id="recent-orders">
+                                    <!-- Orders akan di-populate oleh JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="activity-card">
+                            <div class="activity-header">
+                                <h3 class="activity-title">Quick Actions</h3>
+                            </div>
+                            <div class="activity-content">
+                                <div class="quick-actions">
+                                    <a href="upload.html" class="quick-action">
+                                        <div class="action-icon">
+                                            <i class="fas fa-plus"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h4>Add New Book</h4>
+                                            <p>Upload a new book to the store</p>
+                                        </div>
+                                    </a>
+
+                                    <a href="books.html" class="quick-action">
+                                        <div class="action-icon">
+                                            <i class="fas fa-edit"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h4>Manage Books</h4>
+                                            <p>Edit existing book details</p>
+                                        </div>
+                                    </a>
+
+                                    <a href="orders.html" class="quick-action">
+                                        <div class="action-icon">
+                                            <i class="fas fa-eye"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h4>View Orders</h4>
+                                            <p>Monitor and process orders</p>
+                                        </div>
+                                    </a>
+
+                                    <a href="analytics.html" class="quick-action">
+                                        <div class="action-icon">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h4>View Analytics</h4>
+                                            <p>Deep dive into store metrics</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- System Status & Notifications -->
+                <section class="system-section">
+                    <div class="system-row">
+                        <!-- System Status -->
+                        <div class="system-card">
+                            <div class="system-header">
+                                <h3 class="system-title">System Status</h3>
+                                <div class="system-status" id="system-status">
+                                    <span class="status-indicator status-online"></span>
+                                    <span class="status-text">All systems operational</span>
+                                </div>
+                            </div>
+                            <div class="system-content">
+                                <div class="service-status">
+                                    <div class="service-item">
+                                        <span class="service-name">Auth Service</span>
+                                        <span class="service-indicator" id="auth-status">
+                                            <i class="fas fa-circle status-online"></i>
+                                            Online
+                                        </span>
+                                    </div>
+                                    <div class="service-item">
+                                        <span class="service-name">Book Service</span>
+                                        <span class="service-indicator" id="book-status">
+                                            <i class="fas fa-circle status-online"></i>
+                                            Online
+                                        </span>
+                                    </div>
+                                    <div class="service-item">
+                                        <span class="service-name">Payment Service</span>
+                                        <span class="service-indicator" id="payment-status">
+                                            <i class="fas fa-circle status-online"></i>
+                                            Online
+                                        </span>
+                                    </div>
+                                    <div class="service-item">
+                                        <span class="service-name">Database</span>
+                                        <span class="service-indicator" id="database-status">
+                                            <i class="fas fa-circle status-online"></i>
+                                            Online
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Books -->
+                        <div class="system-card">
+                            <div class="system-header">
+                                <h3 class="system-title">Top Performing Books</h3>
+                                <select id="top-books-metric" class="chart-select">
+                                    <option value="sales">By Sales</option>
+                                    <option value="downloads">By Downloads</option>
+                                    <option value="revenue">By Revenue</option>
+                                </select>
+                            </div>
+                            <div class="system-content">
+                                <div class="top-books-list" id="top-books-list">
+                                    <!-- Top books akan di-populate oleh JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recent Activity Feed -->
+                <section class="activity-feed-section">
+                    <div class="feed-header">
+                        <h3 class="feed-title">Activity Feed</h3>
+                        <div class="feed-controls">
+                            <button class="feed-refresh" id="refresh-activity">
+                                <i class="fas fa-refresh"></i>
+                                Refresh
+                            </button>
+                            <select id="activity-filter" class="chart-select">
+                                <option value="all">All Activities</option>
+                                <option value="orders">Orders</option>
+                                <option value="books">Books</option>
+                                <option value="users">Users</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="feed-content">
+                        <div class="activity-feed" id="activity-feed">
+                            <!-- Activity items akan di-populate oleh JavaScript -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Real-time Data Refresh Modal -->
+    <div id="refresh-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Refreshing Dashboard Data</h3>
+            </div>
+            <div class="modal-body">
+                <div class="refresh-progress">
+                    <div class="refresh-step">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Fetching latest statistics...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../frontend/js/utils.js"></script>
+    <script src="../frontend/js/api.js"></script>
+    <script src="../frontend/js/auth.js"></script>
+    <script src="js/admin-api.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/dashboard.js"></script>
+
+    <script>
+        // Initialize admin dashboard saat DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.adminDashboard = new AdminDashboard();
+        });
+    </script>
+</body>
+
+</html>

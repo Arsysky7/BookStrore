@@ -1,0 +1,726 @@
+<!-- /pdf-bookstore/frontend/register.html -->
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - PDF Bookstore</title>
+    <meta name="description" content="Buat akun PDF Bookstore untuk mengakses ribuan buku digital dengan harga terjangkau.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/improvements.css">
+    <link rel="stylesheet" href="css/modern-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="auth-page">
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Auth Background Animation -->
+    <div class="auth-background">
+        <div class="floating-book book-1"></div>
+        <div class="floating-book book-2"></div>
+        <div class="floating-book book-3"></div>
+        <div class="gradient-overlay"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="header auth-header">
+        <div class="container">
+            <nav class="navbar">
+                <!-- Brand Logo -->
+                <div class="brand">
+                    <a href="index.html" class="brand-link">
+                        <div class="brand-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="brand-text">PDF Bookstore</span>
+                    </a>
+                </div>
+
+                <!-- Auth Navigation -->
+                <div class="auth-nav">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Kembali ke Beranda</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="auth-main">
+        <div class="container">
+            <div class="auth-container">
+                <!-- Left Side - Welcome -->
+                <div class="auth-welcome">
+                    <div class="welcome-content">
+                        <h1 class="welcome-title">Bergabung dengan Komunitas Pembaca!</h1>
+                        <p class="welcome-subtitle">Daftar sekarang untuk mengakses ribuan buku digital dengan harga terjangkau dan pengalaman membaca yang luar biasa.</p>
+
+                        <div class="welcome-benefits">
+                            <h3>Keuntungan Menjadi Member:</h3>
+                            <div class="benefit-list">
+                                <div class="benefit-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Akses unlimited ke 10,000+ buku digital</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Download PDF untuk baca offline</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Sinkronisasi library antar device</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Pembayaran mudah dengan Midtrans</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Update koleksi buku terbaru</span>
+                                </div>
+                                <div class="benefit-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Customer support 24/7</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="welcome-testimonial">
+                            <div class="testimonial-content">
+                                <p>"Platform terbaik untuk buku digital! Koleksinya lengkap dan harganya sangat terjangkau."</p>
+                                <div class="testimonial-author">
+                                    <strong>Sarah Wijaya</strong>
+                                    <span>Member sejak 2023</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Register Form -->
+                <div class="auth-form-container">
+                    <div class="auth-card">
+                        <!-- Form Header -->
+                        <div class="form-header">
+                            <h2>Buat Akun Baru</h2>
+                            <p>Isi informasi di bawah untuk membuat akun</p>
+                        </div>
+
+                        <!-- Register Form -->
+                        <form id="register-form" class="auth-form">
+                            <!-- Full Name Field -->
+                            <div class="form-group">
+                                <label for="fullname" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Nama Lengkap
+                                </label>
+                                <input type="text" id="fullname" name="fullname" class="form-input" placeholder="Contoh: John Doe" required autocomplete="name" spellcheck="false">
+                                <span class="form-error" id="fullname-error"></span>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" id="email" name="email" class="form-input" placeholder="contoh@email.com" required autocomplete="email" spellcheck="false">
+                                <span class="form-error" id="email-error"></span>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="form-group">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i>
+                                    Password
+                                </label>
+                                <div class="password-input-group">
+                                    <input type="password" id="password" name="password" class="form-input" placeholder="Minimal 8 karakter" required autocomplete="new-password">
+                                    <button type="button" class="password-toggle" id="password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength" id="password-strength"></div>
+                                <span class="form-error" id="password-error"></span>
+                            </div>
+
+                            <!-- Confirm Password Field -->
+                            <div class="form-group">
+                                <label for="confirm-password" class="form-label">
+                                    <i class="fas fa-lock"></i>
+                                    Konfirmasi Password
+                                </label>
+                                <div class="password-input-group">
+                                    <input type="password" id="confirm-password" name="confirm_password" class="form-input" placeholder="Ulangi password" required autocomplete="new-password">
+                                    <button type="button" class="password-toggle" id="confirm-password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span class="form-error" id="confirm-password-error"></span>
+                            </div>
+
+                            <!-- Terms Agreement -->
+                            <div class="form-group">
+                                <div class="form-checkbox">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="terms" name="terms" required>
+                                        <span class="checkbox-custom"></span>
+                                        <span class="checkbox-text">
+                                            Saya setuju dengan <a href="#terms" class="terms-link">Syarat & Ketentuan</a> 
+                                            dan <a href="#privacy" class="terms-link">Kebijakan Privasi</a>
+                                        </span>
+                                    </label>
+                                </div>
+                                <span class="form-error" id="terms-error"></span>
+                            </div>
+
+                            <!-- Newsletter Subscription -->
+                            <div class="form-group">
+                                <div class="form-checkbox">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="newsletter" name="newsletter" checked>
+                                        <span class="checkbox-custom"></span>
+                                        <span class="checkbox-text">
+                                            Terima newsletter dan update buku terbaru
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary btn-large btn-block" id="register-btn">
+                                <span class="btn-text">Daftar Sekarang</span>
+                                <i class="fas fa-user-plus btn-icon"></i>
+                            </button>
+
+                            <!-- Divider -->
+                            <div class="form-divider">
+                                <span>atau daftar dengan</span>
+                            </div>
+
+                            <!-- Social Register -->
+                            <div class="social-login">
+                                <button type="button" class="btn btn-social btn-google" id="google-register-btn">
+                                    <i class="fab fa-google"></i>
+                                    <span>Google</span>
+                                </button>
+                                <button type="button" class="btn btn-social btn-facebook" disabled>
+                                    <i class="fab fa-facebook"></i>
+                                    <span>Facebook (Coming Soon)</span>
+                                </button>
+                            </div>
+
+                            <!-- Login Link -->
+                            <div class="form-footer">
+                                <p>Sudah punya akun? <a href="login.html" class="login-link">Login di sini</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Function untuk initialize register page - FIXED VERSION
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide loading overlay on page load
+            const loadingElement = document.getElementById('loading-container');
+            if (loadingElement) {
+                loadingElement.style.display = 'none';
+            }
+
+            // Debug script loading
+            console.log('=== SCRIPT LOADING DEBUG ===');
+            console.log('Utils available:', typeof Utils !== 'undefined');
+            console.log('BookstoreAPI available:', typeof BookstoreAPI !== 'undefined');
+            console.log('ApiClient available:', typeof ApiClient !== 'undefined');
+            console.log('AuthManager available:', typeof AuthManager !== 'undefined');
+            console.log('CartManager available:', typeof CartManager !== 'undefined');
+            console.log('PaymentManager available:', typeof PaymentManager !== 'undefined');
+
+            // Check if all required classes are available
+            if (typeof BookstoreAPI === 'undefined') {
+                console.error('BookstoreAPI not loaded! Check api.js file.');
+                Utils.showNotification('Application loading error. Please refresh the page.', 'error');
+                return;
+            }
+
+            if (typeof AuthManager === 'undefined') {
+                console.error('AuthManager not loaded! Check auth.js file.');
+                Utils.showNotification('Authentication module loading error.', 'error');
+                return;
+            }
+
+            // Initialize register page
+            try {
+                const registerPage = new RegisterPageHandler();
+                registerPage.init();
+            } catch (error) {
+                console.error('Failed to initialize register page:', error);
+                Utils.showNotification('Page initialization failed. Please refresh.', 'error');
+            }
+        });
+
+        class RegisterPageHandler {
+            constructor() {
+                this.form = document.getElementById('register-form');
+                this.fullnameInput = document.getElementById('fullname');
+                this.emailInput = document.getElementById('email');
+                this.passwordInput = document.getElementById('password');
+                this.confirmPasswordInput = document.getElementById('confirm-password');
+                this.termsCheckbox = document.getElementById('terms');
+                this.submitBtn = document.getElementById('register-btn');
+                this.googleRegisterBtn = document.getElementById('google-register-btn');
+
+                // FIXED: Use BookstoreAPI instead of ApiClient
+                this.api = new BookstoreAPI(); // Fixed class name
+                this.auth = new AuthManager(this.api); // Fixed: pass api parameter
+            }
+
+            // Function untuk setup event listeners dan initialize form
+            init() {
+                this.setupEventListeners();
+                this.checkExistingAuth();
+                this.setupPasswordToggles();
+                this.checkOAuthCallback();
+                this.checkOAuthStatus();
+                console.log('Register page initialized successfully');
+            }
+
+            // Function untuk setup semua event listeners
+            setupEventListeners() {
+                // Form submission handler
+                this.form.addEventListener('submit', (e) => this.handleRegister(e));
+
+                // Real-time validation
+                this.fullnameInput.addEventListener('blur', () => this.validateFullname());
+                this.emailInput.addEventListener('blur', () => this.validateEmail());
+                this.passwordInput.addEventListener('input', () => this.validatePassword());
+                this.confirmPasswordInput.addEventListener('input', () => this.validateConfirmPassword());
+                this.termsCheckbox.addEventListener('change', () => this.validateTerms());
+
+                // Google OAuth registration
+                if (this.googleRegisterBtn) {
+                    this.googleRegisterBtn.addEventListener('click', () => this.handleGoogleRegister());
+                }
+            }
+
+            // Function untuk check if user sudah login
+            checkExistingAuth() {
+                if (this.auth.isAuthenticated()) {
+                    Utils.showNotification('Anda sudah login', 'info');
+                    setTimeout(() => window.location.href = 'index.html', 1500);
+                }
+            }
+
+            // Function untuk setup password toggle buttons
+            setupPasswordToggles() {
+                const passwordToggle = document.getElementById('password-toggle');
+                const confirmPasswordToggle = document.getElementById('confirm-password-toggle');
+
+                passwordToggle.addEventListener('click', () => this.togglePassword('password'));
+                confirmPasswordToggle.addEventListener('click', () => this.togglePassword('confirm-password'));
+            }
+
+            // Function untuk handle register form submission
+            async handleRegister(event) {
+                event.preventDefault();
+
+                if (!this.validateForm()) return;
+
+                const formData = new FormData(this.form);
+                const registerData = {
+                    fullname: formData.get('fullname').trim(),
+                    email: formData.get('email').trim(),
+                    password: formData.get('password'),
+                    confirm_password: formData.get('confirm_password'),
+                    newsletter: formData.get('newsletter') === 'on'
+                };
+
+                try {
+                    this.setLoading(true);
+
+                    // Call API register endpoint - FIXED: direct register call
+                    const response = await this.api.register({
+                        full_name: registerData.fullname,
+                        email: registerData.email,
+                        password: registerData.password
+                    });
+
+                    if (response.success || response.token) {
+                        Utils.showNotification('Registrasi berhasil! Silakan login untuk melanjutkan.', 'success');
+
+                        // Redirect ke login page dengan email pre-filled
+                        setTimeout(() => {
+                            window.location.href = `login.html?email=${encodeURIComponent(registerData.email)}`;
+                        }, 2000);
+
+                    } else {
+                        throw new Error(response.message || 'Registrasi gagal');
+                    }
+
+                } catch (error) {
+                    console.error('Register error:', error);
+                    Utils.showNotification(error.message || 'Terjadi kesalahan saat registrasi', 'error');
+                    this.showFormErrors(error);
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            // Function untuk toggle password visibility
+            togglePassword(fieldName) {
+                const input = document.getElementById(fieldName);
+                const toggle = document.getElementById(`${fieldName}-toggle`);
+
+                const type = input.type === 'password' ? 'text' : 'password';
+                input.type = type;
+
+                const icon = toggle.querySelector('i');
+                icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+            }
+
+            // Function untuk validate entire form
+            validateForm() {
+                const fullnameValid = this.validateFullname();
+                const emailValid = this.validateEmail();
+                const passwordValid = this.validatePassword();
+                const confirmPasswordValid = this.validateConfirmPassword();
+                const termsValid = this.validateTerms();
+
+                return fullnameValid && emailValid && passwordValid && confirmPasswordValid && termsValid;
+            }
+
+            // Function untuk validate fullname field
+            validateFullname() {
+                const fullname = this.fullnameInput.value.trim();
+
+                if (!fullname) {
+                    this.showFieldError('fullname', 'Nama lengkap harus diisi');
+                    return false;
+                }
+
+                if (fullname.length < 2) {
+                    this.showFieldError('fullname', 'Nama lengkap minimal 2 karakter');
+                    return false;
+                }
+
+                if (!/^[a-zA-Z\s]+$/.test(fullname)) {
+                    this.showFieldError('fullname', 'Nama hanya boleh berisi huruf dan spasi');
+                    return false;
+                }
+
+                this.clearFieldError('fullname');
+                return true;
+            }
+
+            // Function untuk validate email field
+            validateEmail() {
+                const email = this.emailInput.value.trim();
+
+                if (!email) {
+                    this.showFieldError('email', 'Email harus diisi');
+                    return false;
+                }
+
+                if (!Utils.isValidEmail(email)) {
+                    this.showFieldError('email', 'Format email tidak valid');
+                    return false;
+                }
+
+                this.clearFieldError('email');
+                return true;
+            }
+
+            // Function untuk validate password field dengan strength indicator
+            validatePassword() {
+                const password = this.passwordInput.value;
+                const strengthElement = document.getElementById('password-strength');
+
+                if (!password) {
+                    this.showFieldError('password', 'Password harus diisi');
+                    this.updatePasswordStrength('', strengthElement);
+                    return false;
+                }
+
+                if (password.length < 8) {
+                    this.showFieldError('password', 'Password minimal 8 karakter');
+                    this.updatePasswordStrength('weak', strengthElement);
+                    return false;
+                }
+
+                // Check password strength
+                const strength = this.calculatePasswordStrength(password);
+                this.updatePasswordStrength(strength, strengthElement);
+
+                if (strength === 'weak') {
+                    this.showFieldError('password', 'Password terlalu lemah. Gunakan kombinasi huruf, angka dan simbol');
+                    return false;
+                }
+
+                this.clearFieldError('password');
+                return true;
+            }
+
+            // Function untuk validate confirm password field
+            validateConfirmPassword() {
+                const password = this.passwordInput.value;
+                const confirmPassword = this.confirmPasswordInput.value;
+
+                if (!confirmPassword) {
+                    this.showFieldError('confirm-password', 'Konfirmasi password harus diisi');
+                    return false;
+                }
+
+                if (password !== confirmPassword) {
+                    this.showFieldError('confirm-password', 'Password tidak cocok');
+                    return false;
+                }
+
+                this.clearFieldError('confirm-password');
+                return true;
+            }
+
+            // Function untuk validate terms checkbox
+            validateTerms() {
+                if (!this.termsCheckbox.checked) {
+                    this.showFieldError('terms', 'Anda harus menyetujui syarat dan ketentuan');
+                    return false;
+                }
+
+                this.clearFieldError('terms');
+                return true;
+            }
+
+            // Function untuk calculate password strength
+            calculatePasswordStrength(password) {
+                let score = 0;
+
+                // Length check
+                if (password.length >= 8) score++;
+                if (password.length >= 12) score++;
+
+                // Character variety checks
+                if (/[a-z]/.test(password)) score++;
+                if (/[A-Z]/.test(password)) score++;
+                if (/[0-9]/.test(password)) score++;
+                if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+                if (score < 3) return 'weak';
+                if (score < 5) return 'medium';
+                return 'strong';
+            }
+
+            // Function untuk update password strength indicator
+            updatePasswordStrength(strength, element) {
+                if (!element) return;
+
+                element.className = `password-strength ${strength}`;
+
+                switch (strength) {
+                    case 'weak':
+                        element.innerHTML = '<span class="strength-text">Lemah</span><div class="strength-bar"><div class="bar weak"></div></div>';
+                        break;
+                    case 'medium':
+                        element.innerHTML = '<span class="strength-text">Sedang</span><div class="strength-bar"><div class="bar medium"></div></div>';
+                        break;
+                    case 'strong':
+                        element.innerHTML = '<span class="strength-text">Kuat</span><div class="strength-bar"><div class="bar strong"></div></div>';
+                        break;
+                    default:
+                        element.innerHTML = '';
+                }
+            }
+
+            // Function untuk show field-specific error
+            showFieldError(fieldName, message) {
+                const errorElement = document.getElementById(`${fieldName}-error`);
+                const inputElement = document.getElementById(fieldName);
+
+                if (errorElement) errorElement.textContent = message;
+                if (inputElement) inputElement.classList.add('error');
+            }
+
+            // Function untuk clear field error
+            clearFieldError(fieldName) {
+                const errorElement = document.getElementById(`${fieldName}-error`);
+                const inputElement = document.getElementById(fieldName);
+
+                if (errorElement) errorElement.textContent = '';
+                if (inputElement) inputElement.classList.remove('error');
+            }
+
+            // Function untuk show form errors dari server response
+            showFormErrors(error) {
+                if (error.field) {
+                    this.showFieldError(error.field, error.message);
+                }
+            }
+
+            // Function untuk set loading state
+            setLoading(isLoading) {
+                this.submitBtn.disabled = isLoading;
+
+                if (isLoading) {
+                    this.submitBtn.classList.add('loading');
+                    this.submitBtn.querySelector('.btn-text').textContent = 'Mendaftar...';
+                    Utils.showLoading('Creating account...');
+                } else {
+                    this.submitBtn.classList.remove('loading');
+                    this.submitBtn.querySelector('.btn-text').textContent = 'Daftar Sekarang';
+                    Utils.hideLoading();
+                }
+            }
+
+            // ===== OAUTH METHODS =====
+
+            async checkOAuthStatus() {
+                try {
+                    const status = await this.api.getOAuthStatus();
+                    if (status.google_oauth_enabled) {
+                        console.log('✅ Google OAuth is enabled');
+                        if (this.googleRegisterBtn) {
+                            this.googleRegisterBtn.disabled = false;
+                            this.googleRegisterBtn.title = 'Register with Google';
+                        }
+                    } else {
+                        console.log('❌ Google OAuth is disabled');
+                        if (this.googleRegisterBtn) {
+                            this.googleRegisterBtn.disabled = true;
+                            this.googleRegisterBtn.title = 'Google registration is not available';
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Failed to check OAuth status:', error);
+                    if (this.googleRegisterBtn) {
+                        this.googleRegisterBtn.disabled = true;
+                        this.googleRegisterBtn.title = 'OAuth service unavailable';
+                    }
+                }
+            }
+
+            checkOAuthCallback() {
+                // Check if this is an OAuth callback
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('access_token') || urlParams.has('error')) {
+                    this.handleOAuthCallback();
+                }
+            }
+
+            async handleOAuthCallback() {
+                try {
+                    const result = this.api.handleOAuthCallback();
+
+                    if (result.success) {
+                        Utils.showNotification('Registration with Google successful!', 'success');
+
+                        // Get user profile to update auth state
+                        try {
+                            const profile = await this.api.getProfile();
+                            if (profile.user) {
+                                this.auth.setAuthData(result.access_token, profile.user, true);
+                            }
+                        } catch (profileError) {
+                            console.warn('Failed to fetch user profile:', profileError);
+                        }
+
+                        // Redirect to intended page
+                        const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+                        setTimeout(() => window.location.href = redirectUrl, 1000);
+                    }
+                } catch (error) {
+                    console.error('OAuth callback error:', error);
+                    Utils.showNotification(error.message || 'Google registration failed', 'error');
+                    this.api.clearOAuthState();
+                }
+            }
+
+            async handleGoogleRegister() {
+                try {
+                    Utils.showLoading('Connecting to Google...');
+
+                    if (this.googleRegisterBtn) {
+                        this.googleRegisterBtn.disabled = true;
+                        this.googleRegisterBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Connecting...</span>';
+                    }
+
+                    const response = await this.api.startGoogleOAuth();
+
+                    if (response.auth_url) {
+                        // Store current redirect URL for after OAuth
+                        const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+                        sessionStorage.setItem('oauth_redirect_url', redirectUrl);
+
+                        // Redirect to Google OAuth
+                        window.location.href = response.auth_url;
+                    } else {
+                        throw new Error('No authorization URL received');
+                    }
+                } catch (error) {
+                    console.error('Google OAuth error:', error);
+                    Utils.showNotification(error.message || 'Failed to start Google registration', 'error');
+                } finally {
+                    if (this.googleRegisterBtn) {
+                        this.googleRegisterBtn.disabled = false;
+                        this.googleRegisterBtn.innerHTML = '<i class="fab fa-google"></i> <span>Google</span>';
+                    }
+                    Utils.hideLoading();
+                }
+            }
+        }
+    </script>
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+    <script src="js/mobile-nav.js"></script>
+</body>
+
+</html>

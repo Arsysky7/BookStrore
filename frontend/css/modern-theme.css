@@ -1,0 +1,163 @@
+:root {
+    --gradient-1: #8B5CF6;
+    --gradient-2: #6366F1;
+    --gradient-3: #3B82F6;
+}
+
+
+/* ========== ANIMATED BACKGROUND ========== */
+
+body {
+    background: linear-gradient(135deg, var(--gradient-1) 0%, var(--gradient-2) 50%, var(--gradient-3) 100%);
+    background-size: 400% 400%;
+    animation: gradientMove 15s ease infinite;
+    min-height: 100vh;
+}
+
+@keyframes gradientMove {
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+
+/* ========== HEADER GLASSMORPHISM ========== */
+
+.header {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+
+/* ========== NAVIGATION ========== */
+
+.nav-link {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+
+
+/* Mobile Navigation */
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(99, 102, 241, 0.95));
+        backdrop-filter: blur(30px);
+        flex-direction: column;
+        padding: 2rem;
+        transition: left 0.4s;
+        z-index: 999;
+    }
+    .nav-menu.active {
+        left: 0;
+    }
+}
+
+
+/* ========== BUBBLE CARDS ========== */
+
+.book-card,
+.feature-card,
+.category-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    transition: all 0.4s;
+    overflow: hidden;
+}
+
+.book-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.5);
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+
+/* ========== BUTTONS ========== */
+
+.btn-primary {
+    background: linear-gradient(135deg, #8B5CF6, #6366F1) !important;
+    border: none !important;
+    color: white !important;
+    padding: 1rem 2rem;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.6);
+}
+
+
+/* ========== FORM INPUTS ========== */
+
+.form-input,
+.form-select,
+.form-textarea {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-radius: 12px !important;
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-input:focus {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.3);
+}
+
+
+/* ========== MODAL ========== */
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.5);
+}
+
+
+/* Tambah di modern-theme.css */
+
+@media (max-width: 768px) {
+    .mobile-toggle {
+        display: flex !important;
+    }
+}

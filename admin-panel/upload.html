@@ -1,0 +1,502 @@
+<!-- /pdf-bookstore/admin-panel/upload.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Book - PDF Bookstore Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/upload.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="admin-dashboard">
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message" id="loading-message">Uploading book...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-book-open"></i>
+                    <span class="sidebar-title">Bookstore Admin</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="books.html" class="nav-link">
+                            <i class="fas fa-book"></i>
+                            <span class="nav-text">Book Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="orders.html" class="nav-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="nav-text">Orders</span>
+                            <span class="nav-badge" id="pending-orders-badge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="upload.html" class="nav-link active">
+                            <i class="fas fa-upload"></i>
+                            <span class="nav-text">Upload Books</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="analytics.html" class="nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="nav-text">Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="users.html" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span class="nav-text">Users</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-divider"></div>
+
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span class="nav-text">View Store</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" id="admin-logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="nav-text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Top Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Upload New Book</h1>
+                </div>
+
+                <div class="header-right">
+                    <!-- Upload Progress -->
+                    <div class="upload-progress" id="upload-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <span class="progress-text" id="progress-text">0%</span>
+                    </div>
+
+                    <!-- Admin Profile -->
+                    <div class="admin-profile">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="profile-info">
+                            <span class="profile-name" id="admin-name">Admin</span>
+                            <span class="profile-role">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Upload Content -->
+            <div class="dashboard-content">
+                <!-- Upload Steps -->
+                <section class="upload-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Book Information</h4>
+                            <p>Basic book details</p>
+                        </div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>File Upload</h4>
+                            <p>PDF and cover image</p>
+                        </div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Preview & Publish</h4>
+                            <p>Review and publish</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Upload Form -->
+                <section class="upload-form-section">
+                    <form id="book-upload-form" class="upload-form" enctype="multipart/form-data">
+                        <!-- Step 1: Book Information -->
+                        <div class="form-step active" id="step-1">
+                            <div class="step-header">
+                                <h3>Book Information</h3>
+                                <p>Enter the basic details about your book</p>
+                            </div>
+
+                            <div class="form-content">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="book-title" class="form-label required">
+                                            <i class="fas fa-book"></i>
+                                            Book Title
+                                        </label>
+                                        <input type="text" id="book-title" name="title" class="form-input" placeholder="Enter book title" required>
+                                        <span class="form-error" id="title-error"></span>
+                                        <div class="form-hint">The main title of your book</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="book-author" class="form-label required">
+                                            <i class="fas fa-user"></i>
+                                            Author
+                                        </label>
+                                        <input type="text" id="book-author" name="author" class="form-input" placeholder="Enter author name" required>
+                                        <span class="form-error" id="author-error"></span>
+                                        <div class="form-hint">Author or authors of the book</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="book-description" class="form-label">
+                                        <i class="fas fa-align-left"></i>
+                                        Description
+                                    </label>
+                                    <textarea id="book-description" name="description" class="form-textarea" rows="4" placeholder="Enter book description..."></textarea>
+                                    <div class="form-hint">Brief description of the book content</div>
+                                    <div class="character-count">
+                                        <span id="description-count">0</span> / 1000 characters
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="book-isbn" class="form-label">
+                                            <i class="fas fa-barcode"></i>
+                                            ISBN
+                                        </label>
+                                        <input type="text" id="book-isbn" name="isbn" class="form-input" placeholder="978-0-123456-78-9">
+                                        <div class="form-hint">International Standard Book Number (optional)</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="book-price" class="form-label required">
+                                            <i class="fas fa-dollar-sign"></i>
+                                            Price (IDR)
+                                        </label>
+                                        <input type="number" id="book-price" name="price" class="form-input" placeholder="50000" min="1000" step="1000" required>
+                                        <span class="form-error" id="price-error"></span>
+                                        <div class="form-hint">Price in Indonesian Rupiah</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="book-language" class="form-label">
+                                            <i class="fas fa-globe"></i>
+                                            Language
+                                        </label>
+                                        <select id="book-language" name="language" class="form-select">
+                                            <option value="id">Indonesian</option>
+                                            <option value="en">English</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <div class="form-hint">Primary language of the book</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="book-pages" class="form-label">
+                                            <i class="fas fa-file-alt"></i>
+                                            Total Pages
+                                        </label>
+                                        <input type="number" id="book-pages" name="total_pages" class="form-input" placeholder="300" min="1">
+                                        <div class="form-hint">Number of pages in the book</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-tags"></i>
+                                        Categories
+                                    </label>
+                                    <div class="categories-grid" id="categories-grid">
+                                        <!-- Categories will be populated by JavaScript -->
+                                    </div>
+                                    <div class="form-hint">Select one or more categories for your book</div>
+                                </div>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" class="btn btn-primary" id="next-step-1">
+                                    Next: Upload Files
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: File Upload -->
+                        <div class="form-step" id="step-2">
+                            <div class="step-header">
+                                <h3>File Upload</h3>
+                                <p>Upload your PDF file and cover image</p>
+                            </div>
+
+                            <div class="form-content">
+                                <!-- PDF Upload -->
+                                <div class="upload-section">
+                                    <div class="upload-header">
+                                        <h4>
+                                            <i class="fas fa-file-pdf"></i> PDF File
+                                        </h4>
+                                        <span class="required-badge">Required</span>
+                                    </div>
+
+                                    <div class="file-upload" id="pdf-upload-area">
+                                        <div class="upload-dropzone" id="pdf-dropzone">
+                                            <div class="upload-icon">
+                                                <i class="fas fa-cloud-upload-alt"></i>
+                                            </div>
+                                            <div class="upload-text">
+                                                <h4>Drop your PDF file here</h4>
+                                                <p>or <span class="upload-link">click to browse</span></p>
+                                            </div>
+                                            <div class="upload-specs">
+                                                <p>Maximum file size: 50MB</p>
+                                                <p>Supported format: PDF</p>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="pdf-file-input" name="pdf_file" accept=".pdf" style="display: none;">
+                                    </div>
+
+                                    <div class="file-preview" id="pdf-preview" style="display: none;">
+                                        <div class="file-info">
+                                            <div class="file-icon">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </div>
+                                            <div class="file-details">
+                                                <div class="file-name" id="pdf-file-name"></div>
+                                                <div class="file-size" id="pdf-file-size"></div>
+                                                <div class="upload-status" id="pdf-upload-status">Ready to upload</div>
+                                            </div>
+                                            <button type="button" class="file-remove" id="pdf-remove">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <div class="upload-progress-bar" id="pdf-progress-bar" style="display: none;">
+                                            <div class="progress-fill" id="pdf-progress-fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cover Image Upload -->
+                                <div class="upload-section">
+                                    <div class="upload-header">
+                                        <h4>
+                                            <i class="fas fa-image"></i> Cover Image
+                                        </h4>
+                                        <span class="optional-badge">Optional</span>
+                                    </div>
+
+                                    <div class="file-upload" id="cover-upload-area">
+                                        <div class="upload-dropzone" id="cover-dropzone">
+                                            <div class="upload-icon">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                            <div class="upload-text">
+                                                <h4>Drop your cover image here</h4>
+                                                <p>or <span class="upload-link">click to browse</span></p>
+                                            </div>
+                                            <div class="upload-specs">
+                                                <p>Maximum file size: 10MB</p>
+                                                <p>Supported formats: JPG, PNG, WebP</p>
+                                                <p>Recommended size: 600x800px</p>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="cover-file-input" name="cover_image" accept=".jpg,.jpeg,.png,.webp" style="display: none;">
+                                    </div>
+
+                                    <div class="file-preview" id="cover-preview" style="display: none;">
+                                        <div class="image-preview">
+                                            <img id="cover-preview-image" src="" alt="Cover preview">
+                                            <button type="button" class="file-remove" id="cover-remove">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <div class="file-info">
+                                            <div class="file-name" id="cover-file-name"></div>
+                                            <div class="file-size" id="cover-file-size"></div>
+                                            <div class="upload-status" id="cover-upload-status">Ready to upload</div>
+                                        </div>
+                                        <div class="upload-progress-bar" id="cover-progress-bar" style="display: none;">
+                                            <div class="progress-fill" id="cover-progress-fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" class="btn btn-outline" id="prev-step-2">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Previous
+                                </button>
+                                <button type="button" class="btn btn-primary" id="next-step-2">
+                                    Next: Preview
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Preview & Publish -->
+                        <div class="form-step" id="step-3">
+                            <div class="step-header">
+                                <h3>Preview & Publish</h3>
+                                <p>Review your book details before publishing</p>
+                            </div>
+
+                            <div class="form-content">
+                                <div class="book-preview">
+                                    <div class="preview-card">
+                                        <div class="preview-cover" id="preview-cover">
+                                            <i class="fas fa-book"></i>
+                                        </div>
+                                        <div class="preview-details">
+                                            <h3 id="preview-title">Book Title</h3>
+                                            <p class="preview-author" id="preview-author">Author Name</p>
+                                            <p class="preview-price" id="preview-price">IDR 0</p>
+                                            <div class="preview-categories" id="preview-categories"></div>
+                                            <div class="preview-description" id="preview-description">
+                                                Description will appear here...
+                                            </div>
+                                            <div class="preview-specs">
+                                                <span class="spec-item" id="preview-language">Language</span>
+                                                <span class="spec-item" id="preview-pages">0 pages</span>
+                                                <span class="spec-item" id="preview-isbn">ISBN</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="publish-options">
+                                    <div class="option-group">
+                                        <label class="option-label">
+                                            <input type="checkbox" id="publish-immediately" name="publish_immediately" checked>
+                                            <span class="option-text">
+                                                <strong>Publish immediately</strong>
+                                                <small>Make this book available in the store right away</small>
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <div class="option-group">
+                                        <label class="option-label">
+                                            <input type="checkbox" id="send-notification" name="send_notification">
+                                            <span class="option-text">
+                                                <strong>Send notification</strong>
+                                                <small>Notify subscribers about this new book</small>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" class="btn btn-outline" id="prev-step-3">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Previous
+                                </button>
+                                <button type="submit" class="btn btn-success" id="publish-book">
+                                    <i class="fas fa-rocket"></i>
+                                    Publish Book
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Upload Success Modal -->
+    <div id="upload-success-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Book Published Successfully!</h3>
+            </div>
+            <div class="modal-body">
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Your book has been published</h4>
+                    <p id="success-book-title">Book title will appear here</p>
+                </div>
+                <div class="success-actions">
+                    <a href="#" id="view-book-link" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-eye"></i> View in Store
+                    </a>
+                    <a href="books.html" class="btn btn-outline">
+                        <i class="fas fa-list"></i> Manage Books
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="upload-another">
+                    <i class="fas fa-plus"></i>
+                    Upload Another Book
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../frontend/js/utils.js"></script>
+    <script src="../frontend/js/api.js"></script>
+    <script src="../frontend/js/auth.js"></script>
+    <script src="js/admin-api.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/upload.js"></script>
+
+    <script>
+        // Initialize upload manager saat DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.uploadManager = new UploadManager();
+        });
+    </script>
+</body>
+
+</html>

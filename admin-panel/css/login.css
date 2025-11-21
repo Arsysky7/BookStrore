@@ -1,0 +1,664 @@
+/* /pdf-bookstore/admin-panel/css/login.css */
+
+
+/* Admin Login Page Specific Styles */
+
+
+/* ========== LOGIN PAGE LAYOUT ========== */
+
+.admin-login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--admin-bg-primary);
+    position: relative;
+    overflow: hidden;
+    padding: 1rem;
+}
+
+
+/* ========== BACKGROUND ANIMATION ========== */
+
+.background-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 100px;
+    height: 100px;
+    background: var(--admin-primary);
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 150px;
+    height: 150px;
+    background: var(--admin-secondary);
+    top: 60%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    width: 80px;
+    height: 80px;
+    background: var(--admin-info);
+    bottom: 30%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.shape-4 {
+    width: 120px;
+    height: 120px;
+    background: var(--admin-warning);
+    top: 40%;
+    right: 30%;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    33% {
+        transform: translateY(-20px) rotate(120deg);
+    }
+    66% {
+        transform: translateY(20px) rotate(240deg);
+    }
+}
+
+
+/* ========== LOGIN CONTAINER ========== */
+
+.admin-login-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    /* Pertahankan lebar agar tidak terlalu sempit, tapi sesuaikan sesuai kebutuhan */
+    max-width: 400px;
+    /* Kembali ke 400px agar tidak terlalu sempit, atau sesuaikan */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    /* Mengurangi gap antar elemen utama di dalam container */
+    gap: 0.5rem;
+    /* Asalnya 0.75rem. Ini penting untuk merapatkan secara keseluruhan. */
+    align-items: center;
+}
+
+
+/* ========== LOGIN CARD ========== */
+
+.login-card {
+    background: var(--admin-bg-secondary);
+    border: 1px solid var(--admin-border-light);
+    border-radius: 16px;
+    /* Mengurangi padding untuk membuat card lebih compact */
+    padding: 1.25rem;
+    /* Asalnya 1.5rem. Sedikit dikurangi lagi. */
+    box-shadow: var(--admin-shadow-xl);
+    backdrop-filter: blur(10px);
+    width: 100%;
+}
+
+
+/* ========== BRAND HEADER ========== */
+
+.brand-header {
+    text-align: center;
+    /* Mengurangi margin-bottom agar lebih dekat */
+    margin-bottom: 0.5rem;
+    /* Asalnya 0.75rem */
+}
+
+.brand-logo {
+    width: 60px;
+    /* Sedikit lebih kecil */
+    height: 60px;
+    /* Sedikit lebih kecil */
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-info));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Mengurangi margin di bawah logo */
+    margin: 0 auto 0.5rem auto;
+    /* Asalnya 0.75rem */
+    color: white;
+    font-size: 22px;
+    /* Sedikit lebih kecil */
+}
+
+.brand-title {
+    font-size: 26px;
+    /* Sedikit lebih kecil */
+    font-weight: 700;
+    color: var(--admin-text-primary);
+    margin: 0 0 0.2rem 0;
+    /* Mengurangi jarak di bawah judul utama */
+}
+
+.brand-subtitle {
+    font-size: 15px;
+    /* Sedikit lebih kecil */
+    color: var(--admin-text-secondary);
+    margin: 0;
+}
+
+
+/* ========== FORM HEADER ========== */
+
+.form-header {
+    text-align: center;
+    /* Mengurangi margin-bottom agar lebih dekat dengan form */
+    margin-bottom: 0.5rem;
+    /* Asalnya 0.75rem */
+    /* Mengurangi padding-bottom dan border-bottom jika ingin lebih compact */
+    padding-bottom: 0.75rem;
+    /* Tidak berubah banyak, karena border pemisah */
+    border-bottom: 1px solid var(--admin-border-light);
+}
+
+.form-header h2 {
+    font-size: 22px;
+    /* Sedikit lebih kecil */
+    font-weight: 600;
+    color: var(--admin-text-primary);
+    margin: 0 0 0.2rem 0;
+    /* Mengurangi jarak di bawah h2 */
+}
+
+.form-header p {
+    font-size: 13px;
+    /* Sedikit lebih kecil */
+    color: var(--admin-text-secondary);
+    margin: 0;
+}
+
+
+/* ========== FORM STYLES ========== */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    /* PENTING: Mengurangi gap antar form-group (email & password) secara signifikan */
+    gap: 0.5rem;
+    /* Asalnya 0.75rem. Ini akan merapatkan input email dan password. */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    /* PENTING: Mengurangi gap di dalam form-group (label dan input) secara signifikan */
+    gap: 0.15rem;
+    /* Asalnya 0.25rem. Ini merapatkan label dan input fieldnya. */
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 13px;
+    /* Sedikit lebih kecil */
+    font-weight: 500;
+    color: var(--admin-text-primary);
+}
+
+.form-label i {
+    color: var(--admin-primary);
+    width: 14px;
+    /* Sedikit lebih kecil */
+}
+
+.form-input {
+    width: 100%;
+    /* Mengurangi padding input field */
+    padding: 0.65rem 1rem;
+    /* Asalnya 0.75rem 1rem. Lebih compact. */
+    background: var(--admin-bg-primary);
+    border: 1px solid var(--admin-border-light);
+    border-radius: 8px;
+    color: var(--admin-text-primary);
+    font-size: 14px;
+    transition: var(--admin-transition);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--admin-text-muted);
+}
+
+.form-error {
+    color: var(--admin-danger);
+    font-size: 12px;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+
+/* ========== PASSWORD INPUT GROUP ========== */
+
+.password-input-group {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--admin-text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: var(--admin-transition);
+}
+
+.password-toggle:hover {
+    color: var(--admin-primary);
+}
+
+
+/* ========== CHECKBOX STYLES ========== */
+
+.form-checkbox {
+    /* Mengurangi margin agar checkbox lebih dekat ke password field */
+    margin: 0.4rem 0;
+    /* Asalnya 0.5rem 0. Lebih rapat lagi. */
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 16px;
+    /* Sedikit lebih kecil */
+    height: 16px;
+    /* Sedikit lebih kecil */
+    border: 2px solid var(--admin-border-light);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--admin-transition);
+    position: relative;
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkbox-custom {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkbox-custom::after {
+    content: '✓';
+    color: white;
+    font-size: 11px;
+    /* Sedikit lebih kecil */
+    font-weight: bold;
+}
+
+.checkbox-text {
+    color: var(--admin-text-secondary);
+    font-size: 13px;
+    /* Sedikit lebih kecil */
+}
+
+
+/* ========== LOGIN BUTTON ========== */
+
+.login-btn {
+    width: 100%;
+    /* Mengurangi padding tombol login */
+    padding: 0.8rem 1.5rem;
+    /* Asalnya 0.875rem 1.5rem. Lebih compact. */
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-dark));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    /* Sedikit lebih kecil */
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: var(--admin-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--admin-shadow-lg);
+}
+
+.login-btn:active {
+    transform: translateY(0);
+}
+
+.login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-icon {
+    transition: var(--admin-transition);
+}
+
+.login-btn:hover .btn-icon {
+    transform: translateX(2px);
+}
+
+
+/* ========== SECURITY NOTICE ========== */
+
+.security-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* Mengurangi margin-top agar lebih dekat dengan tombol login */
+    margin-top: 0.6rem;
+    /* Asalnya 0.75rem. Lebih rapat. */
+    padding: 0.6rem 0.9rem;
+    /* Lebih compact */
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 8px;
+    font-size: 11px;
+    /* Sedikit lebih kecil */
+    color: var(--admin-text-secondary);
+}
+
+.security-notice i {
+    color: var(--admin-primary);
+}
+
+
+/* ========== LOGIN FOOTER ========== */
+
+.login-footer {
+    display: flex;
+    justify-content: space-between;
+    /* Mengurangi margin-top agar lebih dekat dengan elemen di atasnya */
+    margin-top: 0.8rem;
+    /* Asalnya 1rem. Lebih rapat. */
+    padding-top: 1.25rem;
+    /* Sedikit dikurangi */
+    border-top: 1px solid var(--admin-border-light);
+}
+
+.footer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--admin-text-muted);
+    text-decoration: none;
+    font-size: 12px;
+    /* Sedikit lebih kecil */
+    transition: var(--admin-transition);
+}
+
+.footer-link:hover {
+    color: var(--admin-primary);
+}
+
+
+/* ========== DEMO INFO CARD ========== */
+
+demo-info {
+    background: var(--admin-bg-secondary);
+    border: 1px solid var(--admin-border-light);
+    border-radius: 12px;
+    padding: 1.25rem;
+    /* Sama dengan login-card agar simetris */
+    box-shadow: var(--admin-shadow-md);
+    /* Penting: Set lebar 100% untuk mengikuti parent (admin-login-container) */
+    width: 100%;
+    /* Mengurangi margin-top untuk mendekatkannya dengan footer */
+    margin-top: 0.8rem;
+    /* Jika 'demo-info' diletakkan setelah login-footer */
+    /* Jika elemen demo-info adalah sebuah div, ubah selector ini menjadi .demo-info */
+}
+
+.demo-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    /* Sedikit dikurangi */
+    color: var(--admin-info);
+    font-weight: 600;
+    font-size: 13px;
+    /* Sedikit lebih kecil */
+}
+
+.demo-credentials {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    /* Sedikit dikurangi */
+}
+
+.credential-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.6rem;
+    /* Lebih compact */
+    background: var(--admin-bg-primary);
+    border-radius: 6px;
+    border: 1px solid var(--admin-border-light);
+}
+
+.credential-label {
+    color: var(--admin-text-secondary);
+    font-size: 11px;
+    /* Sedikit lebih kecil */
+    font-weight: 500;
+}
+
+.credential-value {
+    color: var(--admin-text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    /* Sedikit lebih kecil */
+    font-weight: 500;
+}
+
+.copy-btn {
+    background: none;
+    border: none;
+    color: var(--admin-text-muted);
+    cursor: pointer;
+    padding: 0.2rem;
+    /* Sedikit lebih kecil */
+    border-radius: 4px;
+    transition: var(--admin-transition);
+}
+
+.copy-btn:hover {
+    color: var(--admin-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+@media (max-width: 1024px) {
+    .admin-login-container {
+        max-width: 380px;
+        /* Pertahankan di sini */
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-login-container {
+        gap: 0.4rem;
+        /* Lebih rapat lagi di mobile */
+        max-width: 100%;
+    }
+    .login-card {
+        padding: 1rem;
+        /* Sangat compact */
+    }
+    .brand-logo {
+        width: 48px;
+        height: 48px;
+        font-size: 16px;
+        margin: 0 auto 0.4rem auto;
+    }
+    .brand-title {
+        font-size: 18px;
+    }
+    .form-header h2 {
+        font-size: 16px;
+    }
+    .form-input {
+        padding: 0.5rem 0.8rem;
+    }
+    .login-btn {
+        padding: 0.7rem 1rem;
+        font-size: 13px;
+    }
+    .security-notice {
+        padding: 0.4rem 0.6rem;
+        font-size: 10px;
+    }
+    .login-footer {
+        gap: 0.6rem;
+    }
+    demo-info {
+        padding: 1rem;
+    }
+    .credential-item {
+        padding: 0.3rem 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-login-container {
+        padding: 0.25rem;
+        /* Padding sangat minimal */
+    }
+    .login-card {
+        padding: 0.75rem;
+        /* Sangat compact */
+    }
+    .brand-title {
+        font-size: 16px;
+    }
+    .form-header h2 {
+        font-size: 15px;
+    }
+    .credential-item {
+        flex-direction: column;
+        gap: 0.4rem;
+        text-align: center;
+    }
+}
+
+
+/* ========== LOADING OVERLAY ========== */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+    backdrop-filter: blur(4px);
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--admin-text-primary);
+}
+
+.loading-message {
+    font-size: 14px;
+    color: var(--admin-text-secondary);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--admin-border-light);
+    border-top: 3px solid var(--admin-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ========== NOTIFICATION CONTAINER ========== */
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10001;
+}
+
+
+/* ========== FOCUS STYLES ========== */
+
+.login-btn:focus,
+.form-input:focus,
+.checkbox-label:focus-within,
+.footer-link:focus,
+.copy-btn:focus {
+    outline: 2px solid var(--admin-primary);
+    outline-offset: 2px;
+}

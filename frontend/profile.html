@@ -1,0 +1,726 @@
+<!-- /pdf-bookstore/frontend/profile.html -->
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - PDF Bookstore</title>
+    <meta name="description" content="Kelola profil dan pengaturan akun Anda.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/improvements.css">
+    <link rel="stylesheet" href="css/modern-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .profile-header-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-info h1 {
+            margin: 0 0 8px 0;
+            font-size: 32px;
+        }
+
+        .profile-info p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 14px 24px;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: #4f46e5;
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        .tab.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .login-history-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .login-history-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .login-history-details {
+            flex: 1;
+        }
+
+        .login-history-details strong {
+            display: block;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .login-history-details small {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .danger-zone {
+            border: 2px solid #fecaca;
+            background: #fef2f2;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 40px;
+        }
+
+        .danger-zone h3 {
+            color: #dc2626;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Header (Simplified for profile page) -->
+    <header class="header" style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <div class="container">
+            <nav class="navbar">
+                <div class="brand">
+                    <a href="index.html" class="brand-link">
+                        <div class="brand-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="brand-text">PDF Bookstore</span>
+                    </a>
+                </div>
+                <div class="auth-nav">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Kembali ke Beranda</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-header-content">
+                    <div class="profile-avatar" id="profileAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h1 id="userName">Loading...</h1>
+                        <p id="userEmail">email@example.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-tab="profile-info">
+                    <i class="fas fa-user"></i> Profile Info
+                </button>
+                <button class="tab" data-tab="security">
+                    <i class="fas fa-shield-alt"></i> Security
+                </button>
+                <button class="tab" data-tab="activity">
+                    <i class="fas fa-history"></i> Activity
+                </button>
+            </div>
+
+            <!-- Tab Content 1: Profile Info -->
+            <div class="tab-content active" id="profile-info">
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-id-card"></i>
+                        Personal Information
+                    </h2>
+                    <form id="profileForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" class="form-input" placeholder="John Doe" />
+                            </div>
+                            <div class="form-group">
+                                <label for="emailDisplay" class="form-label">Email (Read-only)</label>
+                                <input type="email" id="emailDisplay" class="form-input" disabled />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Email Verification Card -->
+                <div class="card" id="emailVerificationCard" style="display: none;">
+                    <h2 class="card-title">
+                        <i class="fas fa-envelope-open-text"></i>
+                        Email Verification
+                    </h2>
+                    <p style="color: #64748b; margin-bottom: 20px;">
+                        Your email is not verified. Please check your inbox and click the verification link.
+                    </p>
+                    <button id="resendVerificationBtn" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Resend Verification Email
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: Security -->
+            <div class="tab-content" id="security">
+                <!-- Change Password -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-key"></i>
+                        Change Password
+                    </h2>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="oldPassword" class="form-label">Current Password</label>
+                            <input type="password" id="oldPassword" name="oldPassword" class="form-input" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" id="newPassword" name="newPassword" class="form-input" minlength="8" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-input" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-lock"></i>
+                            Update Password
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Login History -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-history"></i>
+                        Recent Login History
+                    </h2>
+                    <div id="loginHistoryContainer">
+                        <div class="empty-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading login history...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="danger-zone">
+                    <h3>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Danger Zone
+                    </h3>
+                    <p style="color: #dc2626; margin-bottom: 16px;">
+                        Revoke all active sessions and tokens. You will be logged out from all devices.
+                    </p>
+                    <button id="revokeAllBtn" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Revoke All Sessions
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content 3: Activity -->
+            <div class="tab-content" id="activity">
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        Security Activity Feed
+                    </h2>
+                    <div id="activityFeedContainer">
+                        <div class="empty-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading activity...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            if (!authManager.isAuthenticated()) {
+                window.location.href = 'login.html?redirect=profile.html';
+                return;
+            }
+
+            // Load user profile
+            await loadUserProfile();
+
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.dataset.tab;
+
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+
+                    // Load data when switching to tabs
+                    if (targetTab === 'security') {
+                        loadLoginHistory();
+                    } else if (targetTab === 'activity') {
+                        loadActivityFeed();
+                    }
+                });
+            });
+
+            // Profile form submit
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await updateProfile();
+            });
+
+            // Change password form submit
+            document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await changePassword();
+            });
+
+            // Resend verification email
+            document.getElementById('resendVerificationBtn')?.addEventListener('click', async () => {
+                await resendVerification();
+            });
+
+            // Revoke all sessions
+            document.getElementById('revokeAllBtn').addEventListener('click', async () => {
+                if (confirm('Are you sure? This will log you out from all devices.')) {
+                    await revokeAllSessions();
+                }
+            });
+
+            // Functions
+            async function loadUserProfile() {
+                try {
+                    showLoading('Loading profile...');
+                    const user = authManager.getCurrentUser();
+
+                    if (!user) {
+                        const response = await api.getProfile();
+                        if (response.success && response.user) {
+                            localStorage.setItem('bookstore_user', JSON.stringify(response.user));
+                            displayUserInfo(response.user);
+                        }
+                    } else {
+                        displayUserInfo(user);
+                    }
+
+                    hideLoading();
+                } catch (error) {
+                    hideLoading();
+                    showNotification('Failed to load profile: ' + error.message, 'error');
+                }
+            }
+
+            function displayUserInfo(user) {
+                document.getElementById('userName').textContent = user.full_name || user.email.split('@')[0];
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('fullName').value = user.full_name || '';
+                document.getElementById('emailDisplay').value = user.email;
+
+                // Avatar initials
+                const initials = (user.full_name || user.email).split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
+                document.getElementById('profileAvatar').textContent = initials;
+
+                // Show email verification card if not verified
+                if (!user.email_verified) {
+                    document.getElementById('emailVerificationCard').style.display = 'block';
+                }
+            }
+
+            async function updateProfile() {
+                const fullName = document.getElementById('fullName').value.trim();
+
+                try {
+                    showLoading('Updating profile...');
+
+                    const response = await api.updateProfile({ full_name: fullName });
+
+                    hideLoading();
+
+                    if (response.success) {
+                        showNotification('Profile updated successfully!', 'success');
+
+                        // Update localStorage
+                        const user = authManager.getCurrentUser();
+                        user.full_name = fullName;
+                        localStorage.setItem('bookstore_user', JSON.stringify(user));
+
+                        displayUserInfo(user);
+                    } else {
+                        throw new Error(response.message || 'Update failed');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showNotification(error.message || 'Failed to update profile', 'error');
+                }
+            }
+
+            async function changePassword() {
+                const oldPassword = document.getElementById('oldPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+                if (newPassword !== confirmPassword) {
+                    showNotification('New passwords do not match', 'error');
+                    return;
+                }
+
+                if (newPassword.length < 8) {
+                    showNotification('New password must be at least 8 characters', 'error');
+                    return;
+                }
+
+                try {
+                    showLoading('Changing password...');
+
+                    const response = await api.changePassword(oldPassword, newPassword, confirmPassword);
+
+                    hideLoading();
+
+                    if (response.success) {
+                        showNotification('Password changed successfully!', 'success');
+                        document.getElementById('changePasswordForm').reset();
+                    } else {
+                        throw new Error(response.message || 'Password change failed');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showNotification(error.message || 'Failed to change password', 'error');
+                }
+            }
+
+            async function loadLoginHistory() {
+                const container = document.getElementById('loginHistoryContainer');
+
+                try {
+                    const response = await api.getLoginHistory(10);
+
+                    if (response.success && response.data && response.data.length > 0) {
+                        container.innerHTML = response.data.map(login => `
+                            <div class="login-history-item">
+                                <div class="login-history-icon">
+                                    <i class="fas fa-${login.success ? 'check' : 'times'}"></i>
+                                </div>
+                                <div class="login-history-details">
+                                    <strong>${login.ip_address || 'Unknown IP'}</strong>
+                                    <small>
+                                        ${new Date(login.created_at).toLocaleString()} •
+                                        ${login.user_agent || 'Unknown device'}
+                                    </small>
+                                </div>
+                                <span class="status-badge ${login.success ? 'success' : 'failed'}">
+                                    ${login.success ? 'Success' : 'Failed'}
+                                </span>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><p>No login history available</p></div>';
+                    }
+                } catch (error) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load login history</p></div>';
+                }
+            }
+
+            async function loadActivityFeed() {
+                const container = document.getElementById('activityFeedContainer');
+
+                try {
+                    const response = await api.getMyActivity(20);
+
+                    if (response.success && response.data && response.data.length > 0) {
+                        container.innerHTML = response.data.map(activity => `
+                            <div class="login-history-item">
+                                <div class="login-history-icon">
+                                    <i class="fas fa-${getActivityIcon(activity.event_type)}"></i>
+                                </div>
+                                <div class="login-history-details">
+                                    <strong>${formatEventType(activity.event_type)}</strong>
+                                    <small>${new Date(activity.created_at).toLocaleString()}</small>
+                                </div>
+                                <span class="status-badge ${activity.success ? 'success' : 'failed'}">
+                                    ${activity.success ? 'Success' : 'Failed'}
+                                </span>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<div class="empty-state"><i class="fas fa-chart-line"></i><p>No activity data available</p></div>';
+                    }
+                } catch (error) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load activity</p></div>';
+                }
+            }
+
+            async function resendVerification() {
+                try {
+                    showLoading('Sending verification email...');
+
+                    const response = await api.sendVerificationEmail();
+
+                    hideLoading();
+
+                    if (response.success) {
+                        showNotification('Verification email sent! Check your inbox.', 'success');
+                    } else {
+                        throw new Error(response.message || 'Failed to send');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showNotification(error.message || 'Failed to send verification email', 'error');
+                }
+            }
+
+            async function revokeAllSessions() {
+                try {
+                    showLoading('Revoking all sessions...');
+
+                    const response = await api.revokeAllTokens();
+
+                    hideLoading();
+
+                    if (response.success) {
+                        showNotification('All sessions revoked. Logging out...', 'success');
+
+                        setTimeout(() => {
+                            authManager.logout();
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    } else {
+                        throw new Error(response.message || 'Revoke failed');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showNotification(error.message || 'Failed to revoke sessions', 'error');
+                }
+            }
+
+            function getActivityIcon(eventType) {
+                const icons = {
+                    'LOGIN': 'sign-in-alt',
+                    'LOGOUT': 'sign-out-alt',
+                    'REGISTER': 'user-plus',
+                    'PASSWORD_CHANGE': 'key',
+                    'PASSWORD_RESET': 'unlock',
+                    'EMAIL_VERIFICATION': 'envelope-open-text'
+                };
+                return icons[eventType] || 'circle';
+            }
+
+            function formatEventType(eventType) {
+                return eventType.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+            }
+
+            function showLoading(message = 'Loading...') {
+                const loadingContainer = document.getElementById('loading-container');
+                const loadingMessage = loadingContainer.querySelector('.loading-message');
+                loadingMessage.textContent = message;
+                loadingContainer.style.display = 'flex';
+            }
+
+            function hideLoading() {
+                document.getElementById('loading-container').style.display = 'none';
+            }
+
+            function showNotification(message, type = 'info') {
+                const container = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                `;
+                container.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add('fade-out');
+                    setTimeout(() => notification.remove(), 300);
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Library - PDF Bookstore</title>
+    <meta name="description" content="Koleksi perpustakaan digital pribadi dengan fitur baca online, download, dan tracking progres baca.">
+
+    <!-- Preload critical resources untuk performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" as="style">
+
+    <!-- Security headers via meta tags -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/improvements.css">
+    <link rel="stylesheet" href="css/modern-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+</head>
+
+<body class="library-page">
+    <!-- Loading Overlay dengan modern design -->
+    <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+        <div class="loading-container">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <div class="loading-text" id="loading-text">Memuat perpustakaan...</div>
+            <div class="loading-subtitle">Mohon tunggu sebentar</div>
+        </div>
+    </div>
+
+    <!-- Notification Container untuk alerts -->
+    <div id="notification-container" class="notification-container" role="alert" aria-live="polite"></div>
+
+    <!-- Payment Success/Pending Banner -->
+    <div class="payment-banner" id="payment-banner" style="display: none;" role="banner">
+        <div class="container">
+            <div class="banner-content">
+                <div class="banner-icon" aria-hidden="true">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="banner-text">
+                    <h3 id="banner-title">Pembayaran Berhasil!</h3>
+                    <p id="banner-message">Buku telah ditambahkan ke perpustakaan Anda.</p>
+                </div>
+                <button class="banner-close" id="banner-close" aria-label="Tutup notifikasi">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="header" role="banner">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="Main navigation">
+                <!-- Brand Logo -->
+                <div class="brand">
+                    <a href="index.html" class="brand-link" aria-label="PDF Bookstore Homepage">
+                        <div class="brand-icon" aria-hidden="true">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="brand-text">PDF Bookstore</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                        <span>Beranda</span>
+                    </a>
+                    <a href="library.html" class="nav-link active" aria-current="page">
+                        <i class="fas fa-books" aria-hidden="true"></i>
+                        <span>Perpustakaan</span>
+                    </a>
+                    <a href="index.html#categories" class="nav-link">
+                        <i class="fas fa-list" aria-hidden="true"></i>
+                        <span>Kategori</span>
+                    </a>
+                </div>
+
+                <!-- User Profile Dropdown -->
+                <div class="user-profile-container">
+                    <button class="user-profile-btn" id="user-profile-btn" aria-expanded="false" aria-haspopup="true">
+                        <img src="https://via.placeholder.com/32x32?text=U" alt="Profile" class="user-avatar" id="user-avatar">
+                        <span class="user-name" id="user-name">Pengguna</span>
+                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown" role="menu">
+                        <a href="library.html" class="dropdown-item active" role="menuitem">
+                            <i class="fas fa-books" aria-hidden="true"></i>
+                            <span>Perpustakaan Saya</span>
+                        </a>
+                        <a href="profile.html" class="dropdown-item" role="menuitem">
+                            <i class="fas fa-user-edit" aria-hidden="true"></i>
+                            <span>Edit Profil</span>
+                        </a>
+                        <a href="orders.html" class="dropdown-item" role="menuitem">
+                            <i class="fas fa-receipt" aria-hidden="true"></i>
+                            <span>Riwayat Pesanan</span>
+                        </a>
+                        <div class="dropdown-divider" role="separator"></div>
+                        <button class="dropdown-item logout-btn" id="logout-btn" role="menuitem">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span>Keluar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Library Hero Section -->
+    <section class="library-hero" role="banner">
+        <div class="container">
+            <div class="library-hero-content">
+                <div class="hero-text">
+                    <h1>Perpustakaan Digital Saya</h1>
+                    <p>Akses koleksi buku digital pribadi Anda. Baca online, download untuk offline, dan pantau progres bacaan dengan mudah.</p>
+                </div>
+
+                <!-- Library Statistics -->
+                <div class="library-stats" id="library-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon" aria-hidden="true">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="total-books">0</span>
+                            <span class="stat-label">Total Buku</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" aria-hidden="true">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="books-reading">0</span>
+                            <span class="stat-label">Sedang Dibaca</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" aria-hidden="true">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="books-completed">0</span>
+                            <span class="stat-label">Selesai</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Library Controls -->
+    <section class="library-controls" role="search">
+        <div class="container">
+            <div class="controls-bar">
+                <!-- Search & Filter Group -->
+                <div class="search-filter-group">
+                    <div class="search-box">
+                        <label for="library-search" class="sr-only">Cari buku di perpustakaan</label>
+                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                        <input type="search" id="library-search" class="search-input" placeholder="Cari judul, penulis, atau kategori..." autocomplete="off" aria-describedby="search-help">
+                        <button class="search-clear" id="search-clear" aria-label="Hapus pencarian" style="display: none;">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <small id="search-help" class="sr-only">Gunakan kata kunci untuk mencari buku di perpustakaan Anda</small>
+
+                    <div class="filter-group">
+                        <div class="filter-dropdown">
+                            <label for="category-filter" class="sr-only">Filter berdasarkan kategori</label>
+                            <select id="category-filter" class="filter-select">
+                                <option value="">Semua Kategori</option>
+                                <option value="fiction">Fiksi</option>
+                                <option value="non-fiction">Non-Fiksi</option>
+                                <option value="technology">Teknologi</option>
+                                <option value="business">Bisnis</option>
+                                <option value="education">Pendidikan</option>
+                                <option value="programming">Programming</option>
+                                <option value="design">Desain</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-dropdown">
+                            <label for="status-filter" class="sr-only">Filter berdasarkan status baca</label>
+                            <select id="status-filter" class="filter-select">
+                                <option value="">Semua Status</option>
+                                <option value="not-started">Belum Dibaca</option>
+                                <option value="reading">Sedang Dibaca</option>
+                                <option value="completed">Selesai</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View & Sort Controls -->
+                <div class="view-sort-group">
+                    <div class="view-toggle" role="radiogroup" aria-label="Tampilan">
+                        <button class="view-btn active" data-view="grid" role="radio" aria-checked="true" aria-label="Tampilan grid">
+                            <i class="fas fa-th" aria-hidden="true"></i>
+                        </button>
+                        <button class="view-btn" data-view="list" role="radio" aria-checked="false" aria-label="Tampilan list">
+                            <i class="fas fa-list" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <div class="sort-dropdown">
+                        <label for="sort-select" class="sr-only">Urutkan berdasarkan</label>
+                        <select id="sort-select" class="sort-select">
+                            <option value="recent">Terbaru</option>
+                            <option value="title">Judul A-Z</option>
+                            <option value="author">Penulis A-Z</option>
+                            <option value="progress">Progres Baca</option>
+                            <option value="size">Ukuran File</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Library Content -->
+    <main class="library-main" role="main">
+        <div class="container">
+            <!-- Continue Reading Section -->
+            <section class="continue-reading-section" id="continue-reading-section" style="display: none;">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-book-reader" aria-hidden="true"></i> Lanjutkan Membaca
+                    </h2>
+                    <button class="see-all-btn" id="see-all-reading" aria-label="Lihat semua buku yang sedang dibaca">
+                        Lihat Semua
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="continue-reading-grid" id="continue-reading-grid" role="list">
+                    <!-- Dynamic content populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Recent Purchases Section -->
+            <section class="recent-purchases-section" id="recent-purchases-section" style="display: none;">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-shopping-bag" aria-hidden="true"></i> Pembelian Terbaru
+                    </h2>
+                    <button class="see-all-btn" id="see-all-recent" aria-label="Lihat semua pembelian terbaru">
+                        Lihat Semua
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="recent-purchases-grid" id="recent-purchases-grid" role="list">
+                    <!-- Dynamic content populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- All Books Section -->
+            <section class="all-books-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-books" aria-hidden="true"></i> Semua Buku
+                        <span class="book-count" id="book-count">(0)</span>
+                    </h2>
+                    <div class="section-controls">
+                        <button class="select-all-btn" id="select-all-btn" style="display: none;">
+                            <i class="fas fa-check-square" aria-hidden="true"></i>
+                            Pilih Semua
+                        </button>
+                        <button class="bulk-action-btn" id="bulk-download-btn" style="display: none;">
+                            <i class="fas fa-download" aria-hidden="true"></i>
+                            Download Terpilih
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Books Container -->
+                <div class="books-container" id="books-container">
+                    <!-- Loading State -->
+                    <div class="loading-books" id="loading-books">
+                        <div class="loading-grid">
+                            <div class="skeleton-book" aria-hidden="true"></div>
+                            <div class="skeleton-book" aria-hidden="true"></div>
+                            <div class="skeleton-book" aria-hidden="true"></div>
+                            <div class="skeleton-book" aria-hidden="true"></div>
+                            <div class="skeleton-book" aria-hidden="true"></div>
+                            <div class="skeleton-book" aria-hidden="true"></div>
+                        </div>
+                    </div>
+
+                    <!-- Books Grid/List -->
+                    <div class="library-grid" id="library-grid" role="list">
+                        <!-- Dynamic books populated by JavaScript -->
+                    </div>
+
+                    <!-- Empty Library State -->
+                    <div class="empty-library" id="empty-library" style="display: none;">
+                        <div class="empty-content">
+                            <div class="empty-icon" aria-hidden="true">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h3>Perpustakaan Anda Masih Kosong</h3>
+                            <p>Mulai membangun koleksi buku digital Anda dengan menjelajahi ribuan buku berkualitas tinggi yang tersedia.</p>
+                            <a href="index.html" class="btn btn-primary">
+                                <i class="fas fa-search" aria-hidden="true"></i> Jelajahi Koleksi Buku
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- No Results State -->
+                    <div class="no-results" id="no-results" style="display: none;">
+                        <div class="no-results-content">
+                            <div class="no-results-icon" aria-hidden="true">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h3>Tidak Ada Buku Ditemukan</h3>
+                            <p>Coba ubah kata kunci pencarian atau filter yang digunakan.</p>
+                            <button class="btn btn-secondary" id="clear-filters-btn">
+                                <i class="fas fa-filter" aria-hidden="true"></i>
+                                Hapus Semua Filter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container" id="pagination-container" style="display: none;">
+                    <nav class="pagination" role="navigation" aria-label="Navigasi halaman">
+                        <button class="pagination-btn" id="prev-page" disabled aria-label="Halaman sebelumnya">
+                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                            <span>Sebelumnya</span>
+                        </button>
+
+                        <div class="pagination-pages" id="pagination-pages" role="list">
+                            <!-- Dynamic pagination populated by JavaScript -->
+                        </div>
+
+                        <button class="pagination-btn" id="next-page" aria-label="Halaman selanjutnya">
+                            <span>Selanjutnya</span>
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </nav>
+
+                    <div class="pagination-info">
+                        <span id="pagination-info-text">Menampilkan 1-12 dari 24 buku</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <div class="brand">
+                            <div class="brand-icon" aria-hidden="true">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <span class="brand-text">PDF Bookstore</span>
+                        </div>
+                        <p class="footer-description">
+                            Platform terpercaya untuk perpustakaan digital berkualitas tinggi dengan fitur baca online dan download.
+                        </p>
+                        <div class="footer-social">
+                            <a href="#" class="social-link" aria-label="Facebook">
+                                <i class="fab fa-facebook" aria-hidden="true"></i>
+                            </a>
+                            <a href="#" class="social-link" aria-label="Twitter">
+                                <i class="fab fa-twitter" aria-hidden="true"></i>
+                            </a>
+                            <a href="#" class="social-link" aria-label="Instagram">
+                                <i class="fab fa-instagram" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">Navigasi</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Beranda</a></li>
+                        <li><a href="index.html#categories">Kategori</a></li>
+                        <li><a href="library.html">Perpustakaan</a></li>
+                        <li><a href="search.html">Pencarian</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">Akun</h3>
+                    <ul class="footer-links">
+                        <li><a href="profile.html">Profil Saya</a></li>
+                        <li><a href="orders.html">Riwayat Pesanan</a></li>
+                        <li><a href="settings.html">Pengaturan</a></li>
+                        <li><a href="downloads.html">Download</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">Bantuan</h3>
+                    <ul class="footer-links">
+                        <li><a href="help.html">Pusat Bantuan</a></li>
+                        <li><a href="contact.html">Hubungi Kami</a></li>
+                        <li><a href="privacy.html">Kebijakan Privasi</a></li>
+                        <li><a href="terms.html">Syarat & Ketentuan</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2025 PDF Bookstore. Dibuat dengan ❤️ oleh <strong>Syahdinata Dwi Fachril</strong></p>
+                </div>
+                <div class="footer-security">
+                    <span class="security-badge">
+                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                        Aman & Terpercaya
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Book Actions Modal -->
+    <div class="modal" id="book-actions-modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Aksi Buku</h3>
+                <button class="modal-close" id="modal-close" aria-label="Tutup modal">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="book-actions-grid">
+                    <button class="action-card" id="read-online-action" data-action="read">
+                        <div class="action-icon" aria-hidden="true">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                        <div class="action-info">
+                            <h4>Baca Online</h4>
+                            <p>Mulai membaca langsung di browser</p>
+                        </div>
+                    </button>
+
+                    <button class="action-card" id="download-pdf-action" data-action="download">
+                        <div class="action-icon" aria-hidden="true">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="action-info">
+                            <h4>Download PDF</h4>
+                            <p>Simpan untuk membaca offline</p>
+                        </div>
+                    </button>
+
+                    <button class="action-card" id="book-details-action" data-action="details">
+                        <div class="action-icon" aria-hidden="true">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="action-info">
+                            <h4>Detail Buku</h4>
+                            <p>Lihat informasi lengkap</p>
+                        </div>
+                    </button>
+
+                    <button class="action-card" id="book-review-action" data-action="review">
+                        <div class="action-icon" aria-hidden="true">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="action-info">
+                            <h4>Beri Rating</h4>
+                            <p>Review dan rating buku</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Dialog Modal -->
+    <div class="modal" id="confirm-modal" role="dialog" aria-labelledby="confirm-title" aria-modal="true">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3 id="confirm-title">Konfirmasi</h3>
+                <button class="modal-close" aria-label="Tutup konfirmasi">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">Apakah Anda yakin?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="confirm-cancel">Batal</button>
+                <button class="btn btn-primary" id="confirm-ok">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts dengan proper loading order -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Library Page Handler Script -->
+    <script>
+        class LibraryPageManager {
+            constructor() {
+                // Core dependencies dari external files
+                this.api = new ApiClient(); // dari js/api.js line 1
+                this.auth = new AuthManager(); // dari js/auth.js line 1  
+                this.utils = Utils; // dari js/utils.js line 1
+
+                // Application state management
+                this.state = {
+                    currentUser: null, // User data dari auth service
+                    allBooks: [], // Complete books array dari API
+                    filteredBooks: [], // Filtered results untuk display
+                    selectedBooks: new Set(), // Selected books untuk bulk actions
+                    isLoading: false, // Loading state tracker
+                    lastError: null // Error state untuk debugging
+                };
+
+                // UI configuration
+                this.config = {
+                    currentView: 'grid', // 'grid' | 'list' display mode
+                    currentPage: 1, // Pagination current page
+                    booksPerPage: 12, // Items per page untuk pagination
+                    searchDebounceTime: 300, // Debounce time untuk search input
+                    autoSaveInterval: 5000 // Auto-save reading progress interval
+                };
+
+                // Filters state
+                this.filters = {
+                    search: '', // Search query string
+                    category: '', // Selected category filter
+                    status: '', // Reading status filter  
+                    sort: 'recent' // Sort order selection
+                };
+
+                // DOM element cache untuk performance
+                this.elements = {};
+
+                // Event listeners cleanup array
+                this.eventListeners = [];
+
+                // Reading progress auto-save timer
+                this.progressSaveTimer = null;
+            }
+
+            // Function untuk initialize library page - setup semua components
+            async init() {
+                try {
+                    // Show loading state immediately untuk UX
+                    this.showLoading('Memuat perpustakaan digital...');
+
+                    // Verify user authentication sebelum load data
+                    if (!await this.verifyAuthentication()) {
+                        this.redirectToLogin();
+                        return;
+                    }
+
+                    // Cache DOM elements untuk performance optimization
+                    this.cacheElements();
+
+                    // Setup auto-save untuk reading progress
+                    this.setupAutoSave();
+
+                    console.log('Library page initialized successfully');
+                } catch (error) {
+                    console.error('Failed to initialize library page:', error);
+                    this.handleError('Gagal memuat perpustakaan', error);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            // Function untuk cache DOM elements untuk performance optimization
+            cacheElements() {
+                this.elements = {
+                    // Loading dan notification elements
+                    loadingOverlay: document.getElementById('loading-overlay'),
+                    loadingText: document.getElementById('loading-text'),
+                    notificationContainer: document.getElementById('notification-container'),
+
+                    // Payment banner elements
+                    paymentBanner: document.getElementById('payment-banner'),
+                    bannerTitle: document.getElementById('banner-title'),
+                    bannerMessage: document.getElementById('banner-message'),
+                    bannerClose: document.getElementById('banner-close'),
+
+                    // User profile elements
+                    userProfileBtn: document.getElementById('user-profile-btn'),
+                    userDropdown: document.getElementById('user-dropdown'),
+                    userAvatar: document.getElementById('user-avatar'),
+                    userName: document.getElementById('user-name'),
+                    logoutBtn: document.getElementById('logout-btn'),
+
+                    // Search dan filter elements
+                    searchInput: document.getElementById('library-search'),
+                    searchClear: document.getElementById('search-clear'),
+                    categoryFilter: document.getElementById('category-filter'),
+                    statusFilter: document.getElementById('status-filter'),
+                    sortSelect: document.getElementById('sort-select'),
+
+                    // View controls
+                    viewBtns: document.querySelectorAll('.view-btn'),
+
+                    // Stats elements
+                    totalBooks: document.getElementById('total-books'),
+                    booksReading: document.getElementById('books-reading'),
+                    booksCompleted: document.getElementById('books-completed'),
+
+                    // Content sections
+                    continueReadingSection: document.getElementById('continue-reading-section'),
+                    continueReadingGrid: document.getElementById('continue-reading-grid'),
+                    recentPurchasesSection: document.getElementById('recent-purchases-section'),
+                    recentPurchasesGrid: document.getElementById('recent-purchases-grid'),
+
+                    // Books container elements
+                    booksContainer: document.getElementById('books-container'),
+                    libraryGrid: document.getElementById('library-grid'),
+                    loadingBooks: document.getElementById('loading-books'),
+                    emptyLibrary: document.getElementById('empty-library'),
+                    noResults: document.getElementById('no-results'),
+                    bookCount: document.getElementById('book-count'),
+
+                    // Pagination elements
+                    paginationContainer: document.getElementById('pagination-container'),
+                    prevPageBtn: document.getElementById('prev-page'),
+                    nextPageBtn: document.getElementById('next-page'),
+                    paginationPages: document.getElementById('pagination-pages'),
+                    paginationInfo: document.getElementById('pagination-info-text'),
+
+                    // Modal elements
+                    bookActionsModal: document.getElementById('book-actions-modal'),
+                    modalOverlay: document.getElementById('modal-overlay'),
+                    modalClose: document.getElementById('modal-close'),
+                    modalTitle: document.getElementById('modal-title'),
+
+                    // Bulk action elements
+                    selectAllBtn: document.getElementById('select-all-btn'),
+                    bulkDownloadBtn: document.getElementById('bulk-download-btn'),
+                    clearFiltersBtn: document.getElementById('clear-filters-btn')
+                };
+            }
+
+            // Function untuk setup semua event listeners dengan proper cleanup tracking
+            setupEventListeners() {
+                // User profile dropdown toggle
+                this.addEventListenerWithCleanup(this.elements.userProfileBtn, 'click', (e) => {
+                    e.stopPropagation();
+                    this.toggleUserDropdown();
+                });
+
+                // Close dropdown when clicking outside
+                this.addEventListenerWithCleanup(document, 'click', (e) => {
+                    if (this.elements.userProfileBtn && !this.elements.userProfileBtn.contains(e.target)) {
+                        this.closeUserDropdown();
+                    }
+                });
+
+                // Logout handler
+                this.addEventListenerWithCleanup(this.elements.logoutBtn, 'click', () => {
+                    this.handleLogout();
+                });
+
+                // Search input dengan debouncing untuk performance
+                this.addEventListenerWithCleanup(this.elements.searchInput, 'input',
+                    this.utils.debounce((e) => {
+                        this.filters.search = e.target.value.trim();
+                        this.applyFilters();
+                        this.updateSearchClearButton();
+                    }, this.config.searchDebounceTime)
+                );
+
+                // Search clear button
+                this.addEventListenerWithCleanup(this.elements.searchClear, 'click', () => {
+                    this.clearSearch();
+                });
+
+                // Filter dropdowns
+                this.addEventListenerWithCleanup(this.elements.categoryFilter, 'change', (e) => {
+                    this.filters.category = e.target.value;
+                    this.applyFilters();
+                });
+
+                this.addEventListenerWithCleanup(this.elements.statusFilter, 'change', (e) => {
+                    this.filters.status = e.target.value;
+                    this.applyFilters();
+                });
+
+                this.addEventListenerWithCleanup(this.elements.sortSelect, 'change', (e) => {
+                    this.filters.sort = e.target.value;
+                    this.applyFilters();
+                });
+
+                // View toggle buttons
+                if (this.elements.viewBtns) {
+                    this.elements.viewBtns.forEach(btn => {
+                        this.addEventListenerWithCleanup(btn, 'click', (e) => {
+                            this.config.currentView = e.currentTarget.dataset.view;
+                            this.updateViewButtons();
+                            this.renderBooks();
+                        });
+                    });
+                }
+
+                // Pagination buttons
+                this.addEventListenerWithCleanup(this.elements.prevPageBtn, 'click', () => {
+                    this.previousPage();
+                });
+
+                this.addEventListenerWithCleanup(this.elements.nextPageBtn, 'click', () => {
+                    this.nextPage();
+                });
+
+                // Modal close handlers
+                this.addEventListenerWithCleanup(this.elements.modalClose, 'click', () => {
+                    this.hideBookModal();
+                });
+
+                this.addEventListenerWithCleanup(this.elements.modalOverlay, 'click', () => {
+                    this.hideBookModal();
+                });
+
+                // Payment banner close
+                this.addEventListenerWithCleanup(this.elements.bannerClose, 'click', () => {
+                    this.hidePaymentBanner();
+                });
+
+                // Bulk actions
+                this.addEventListenerWithCleanup(this.elements.selectAllBtn, 'click', () => {
+                    this.toggleSelectAll();
+                });
+
+                this.addEventListenerWithCleanup(this.elements.bulkDownloadBtn, 'click', () => {
+                    this.bulkDownload();
+                });
+
+                this.addEventListenerWithCleanup(this.elements.clearFiltersBtn, 'click', () => {
+                    this.clearAllFilters();
+                });
+
+                // Event delegation untuk book actions (dynamic content)
+                this.addEventListenerWithCleanup(document, 'click', (e) => {
+                    this.handleBookActions(e);
+                });
+
+                // Keyboard shortcuts
+                this.addEventListenerWithCleanup(document, 'keydown', (e) => {
+                    this.handleKeyboardShortcuts(e);
+                });
+
+                // Mobile menu toggle
+                const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+                if (mobileMenuToggle) {
+                    this.addEventListenerWithCleanup(mobileMenuToggle, 'click', () => {
+                        this.toggleMobileMenu();
+                    });
+                }
+            }
+
+            // Function untuk add event listener dengan cleanup tracking
+            addEventListenerWithCleanup(element, event, handler) {
+                if (!element) return;
+
+                element.addEventListener(event, handler);
+                this.eventListeners.push({
+                    element,
+                    event,
+                    handler
+                });
+            }
+
+            // Function untuk verify user authentication
+            async verifyAuthentication() {
+                try {
+                    if (!this.auth.isAuthenticated()) {
+                        return false;
+                    }
+
+                    const result = await this.api.verifyToken();
+                    return result && result.valid;
+                } catch (error) {
+                    console.error('Authentication verification failed:', error);
+                    return false;
+                }
+            }
+
+            // Function untuk redirect ke login page
+            redirectToLogin() {
+                this.utils.showNotification('Silakan login terlebih dahulu', 'warning');
+                setTimeout(() => {
+                    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                }, 1500);
+            }
+
+            // Function untuk load user profile data
+            async loadUserProfile() {
+                try {
+                    const userData = await this.api.getProfile();
+                    this.state.currentUser = userData.user;
+                    this.updateUserUI();
+                } catch (error) {
+                    console.error('Failed to load user profile:', error);
+                    // Continue with default user data
+                    this.state.currentUser = {
+                        name: 'Pengguna',
+                        email: '',
+                        avatar: null
+                    };
+                    this.updateUserUI();
+                }
+            }
+
+            // Function untuk update user UI elements
+            updateUserUI() {
+                const user = this.state.currentUser;
+                if (this.elements.userName) {
+                    this.elements.userName.textContent = user.name || 'Pengguna';
+                }
+                if (this.elements.userAvatar && user.avatar) {
+                    this.elements.userAvatar.src = user.avatar;
+                    this.elements.userAvatar.alt = `Avatar ${user.name}`;
+                }
+            }
+
+            // Function untuk load library books dari API
+            async loadLibraryBooks() {
+                try {
+                    this.state.isLoading = true;
+
+                    if (this.elements.loadingBooks) {
+                        this.elements.loadingBooks.style.display = 'block';
+                    }
+
+                    const response = await this.api.getLibraryBooks();
+
+                    if (response.success && response.books) {
+                        this.state.allBooks = response.books;
+                        this.state.filteredBooks = [...this.state.allBooks];
+
+                        if (this.state.allBooks.length === 0) {
+                            this.showEmptyLibrary();
+                        } else {
+                            this.hideEmptyLibrary();
+                            this.renderBooks();
+                            this.renderContinueReading();
+                            this.renderRecentPurchases();
+                        }
+                    } else {
+                        throw new Error(response.message || 'Gagal memuat perpustakaan');
+                    }
+                } catch (error) {
+                    console.error('Failed to load library books:', error);
+                    this.handleError('Gagal memuat buku perpustakaan', error);
+                    this.showEmptyLibrary();
+                } finally {
+                    this.state.isLoading = false;
+
+                    if (this.elements.loadingBooks) {
+                        this.elements.loadingBooks.style.display = 'none';
+                    }
+                }
+            }
+
+            // Function untuk check payment status dari URL parameters
+            checkPaymentStatus() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const success = urlParams.get('success');
+                const pending = urlParams.get('pending');
+                const orderId = urlParams.get('order');
+
+                if (success && orderId) {
+                    this.showPaymentBanner('success', 'Pembayaran Berhasil!', 'Buku telah ditambahkan ke perpustakaan Anda.');
+                    // Clean URL parameters
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } else if (pending && orderId) {
+                    this.showPaymentBanner('pending', 'Pembayaran Tertunda', 'Menunggu konfirmasi pembayaran.');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+
+            // Function untuk show payment notification banner
+            showPaymentBanner(type, title, message) {
+                if (!this.elements.paymentBanner) return;
+
+                const banner = this.elements.paymentBanner;
+                const icon = banner.querySelector('.banner-icon i');
+
+                banner.className = `payment-banner ${type}`;
+
+                if (icon) {
+                    icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-clock';
+                }
+
+                if (this.elements.bannerTitle) {
+                    this.elements.bannerTitle.textContent = title;
+                }
+
+                if (this.elements.bannerMessage) {
+                    this.elements.bannerMessage.textContent = message;
+                }
+
+                banner.style.display = 'block';
+                banner.setAttribute('aria-hidden', 'false');
+
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    this.hidePaymentBanner();
+                }, 5000);
+            }
+
+            // Function untuk hide payment banner
+            hidePaymentBanner() {
+                if (this.elements.paymentBanner) {
+                    this.elements.paymentBanner.style.display = 'none';
+                    this.elements.paymentBanner.setAttribute('aria-hidden', 'true');
+                }
+            }
+
+            // Function untuk render books sesuai current view mode
+            renderBooks() {
+                if (!this.elements.libraryGrid) return;
+
+                const container = this.elements.libraryGrid;
+
+                if (this.state.filteredBooks.length === 0) {
+                    this.showNoResults();
+                    return;
+                }
+
+                this.hideNoResults();
+                this.updateBookCount();
+
+                // Calculate pagination
+                const startIndex = (this.config.currentPage - 1) * this.config.booksPerPage;
+                const endIndex = startIndex + this.config.booksPerPage;
+                const booksToShow = this.state.filteredBooks.slice(startIndex, endIndex);
+
+                // Render books dengan security sanitization
+                const booksHTML = booksToShow.map(book => this.renderBookCard(book)).join('');
+                container.innerHTML = booksHTML;
+
+                // Update container class untuk view mode
+                container.className = `library-${this.config.currentView}`;
+
+                // Update pagination
+                this.updatePagination();
+
+                // Attach event listeners ke new elements
+                this.attachBookCardListeners();
+            }
+
+            // Function untuk render individual book card dengan security
+            renderBookCard(book) {
+                // Sanitize book data untuk prevent XSS
+                const sanitizedBook = {
+                    id: this.utils.escapeHtml(book.id || ''),
+                    title: this.utils.escapeHtml(book.title || 'Untitled'),
+                    author: this.utils.escapeHtml(book.author || 'Unknown Author'),
+                    category: this.utils.escapeHtml(book.category || 'General'),
+                    cover_url: book.cover_url || 'https://via.placeholder.com/200x300?text=No+Cover',
+                    purchased_at: book.purchased_at || new Date().toISOString(),
+                    pages: book.pages || 0,
+                    file_size: book.file_size || 0
+                };
+
+                // Get reading progress dengan error handling
+                const progress = this.getReadingProgress(sanitizedBook.id);
+                const progressPercentage = progress ? Math.min(100, Math.max(0, progress.progress || 0)) : 0;
+                const readingStatus = this.getReadingStatus(progressPercentage);
+                const lastRead = progress ? this.utils.formatDate(progress.lastRead) : 'Belum dibaca';
+
+                if (this.config.currentView === 'list') {
+                    return this.renderListCard(sanitizedBook, progressPercentage, readingStatus, lastRead);
+                } else {
+                    return this.renderGridCard(sanitizedBook, progressPercentage, readingStatus, lastRead);
+                }
+            }
+
+            // Function untuk render grid view card
+            renderGridCard(book, progressPercentage, readingStatus, lastRead) {
+                return `
+                    <div class="library-book-card" data-book-id="${book.id}" role="listitem">
+                        <div class="book-cover-container">
+                            <img 
+                                src="${book.cover_url}" 
+                                alt="Cover buku ${book.title}" 
+                                class="book-cover"
+                                loading="lazy"
+                                onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'"
+                            >
+                            <div class="book-progress" aria-label="Progres bacaan ${progressPercentage}%">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                                </div>
+                                <span class="progress-text">${Math.round(progressPercentage)}% selesai</span>
+                            </div>
+                            <div class="book-overlay">
+                                <div class="overlay-actions">
+                                    <button class="overlay-btn read-btn" data-action="read" data-book-id="${book.id}" title="Baca Online" aria-label="Baca ${book.title} online">
+                                        <i class="fas fa-book-reader" aria-hidden="true"></i>
+                                    </button>
+                                    <button class="overlay-btn download-btn" data-action="download" data-book-id="${book.id}" title="Download PDF" aria-label="Download ${book.title}">
+                                        <i class="fas fa-download" aria-hidden="true"></i>
+                                    </button>
+                                    <button class="overlay-btn more-btn" data-action="more" data-book-id="${book.id}" title="Opsi Lainnya" aria-label="Opsi lainnya untuk ${book.title}">
+                                        <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="book-selection">
+                                <input 
+                                    type="checkbox" 
+                                    class="book-checkbox" 
+                                    data-book-id="${book.id}"
+                                    aria-label="Pilih ${book.title}"
+                                >
+                            </div>
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">${book.title}</h3>
+                            <p class="book-author">oleh ${book.author}</p>
+                            <div class="book-meta">
+                                <span class="book-category">${book.category}</span>
+                                <span class="reading-status status-${readingStatus.toLowerCase().replace(/\s+/g, '-')}">${readingStatus}</span>
+                            </div>
+                            <div class="book-details">
+                                <span class="book-pages">${book.pages} halaman</span>
+                                <span class="book-size">${this.utils.formatFileSize(book.file_size * 1024 * 1024)}</span>
+                            </div>
+                            <p class="last-read">Terakhir: ${lastRead}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Function untuk render list view card
+            renderListCard(book, progressPercentage, readingStatus, lastRead) {
+                return `
+                    <div class="library-book-list" data-book-id="${book.id}" role="listitem">
+                        <div class="book-selection-list">
+                            <input 
+                                type="checkbox" 
+                                class="book-checkbox" 
+                                data-book-id="${book.id}"
+                                aria-label="Pilih ${book.title}"
+                            >
+                        </div>
+                        <div class="book-cover-list">
+                            <img 
+                                src="${book.cover_url}" 
+                                alt="Cover buku ${book.title}" 
+                                loading="lazy"
+                                onerror="this.src='https://via.placeholder.com/80x120?text=No+Cover'"
+                            >
+                            <div class="book-progress-overlay">
+                                <div class="progress-circle" style="--progress: ${progressPercentage}%" aria-label="Progres ${progressPercentage}%">
+                                    <span>${Math.round(progressPercentage)}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="book-info-list">
+                            <div class="book-main-info">
+                                <h3 class="book-title">${book.title}</h3>
+                                <p class="book-author">oleh ${book.author}</p>
+                                <div class="book-meta">
+                                    <span class="book-category">${book.category}</span>
+                                    <span class="book-pages">${book.pages} halaman</span>
+                                    <span class="book-size">${this.utils.formatFileSize(book.file_size * 1024 * 1024)}</span>
+                                    <span class="book-purchased">Dibeli ${this.utils.formatDate(book.purchased_at)}</span>
+                                </div>
+                            </div>
+                            <div class="book-status-info">
+                                <span class="status-badge status-${readingStatus.toLowerCase().replace(/\s+/g, '-')}">${readingStatus}</span>
+                                <p class="last-read">Terakhir dibaca: ${lastRead}</p>
+                            </div>
+                            <div class="book-actions-list">
+                                <button class="action-btn read-btn" data-action="read" data-book-id="${book.id}" aria-label="Baca ${book.title}">
+                                    <i class="fas fa-book-reader" aria-hidden="true"></i>
+                                    <span>Baca</span>
+                                </button>
+                                <button class="action-btn download-btn" data-action="download" data-book-id="${book.id}" aria-label="Download ${book.title}">
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    <span>Download</span>
+                                </button>
+                                <button class="action-btn more-btn" data-action="more" data-book-id="${book.id}" aria-label="Opsi lainnya untuk ${book.title}">
+                                    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Function untuk cleanup semua event listeners saat page unload
+            cleanup() {
+                // Clear auto-save timer
+                if (this.progressSaveTimer) {
+                    clearInterval(this.progressSaveTimer);
+                }
+
+                // Remove all event listeners
+                this.eventListeners.forEach(({
+                    element,
+                    event,
+                    handler
+                }) => {
+                    if (element && element.removeEventListener) {
+                        element.removeEventListener(event, handler);
+                    }
+                });
+
+                this.eventListeners = [];
+            }
+
+            // Function untuk show loading state
+            showLoading(message = 'Memuat...') {
+                if (this.elements.loadingOverlay) {
+                    this.elements.loadingOverlay.style.display = 'flex';
+                    this.elements.loadingOverlay.setAttribute('aria-hidden', 'false');
+                }
+                if (this.elements.loadingText) {
+                    this.elements.loadingText.textContent = message;
+                }
+            }
+
+            // Function untuk hide loading state
+            hideLoading() {
+                if (this.elements.loadingOverlay) {
+                    this.elements.loadingOverlay.style.display = 'none';
+                    this.elements.loadingOverlay.setAttribute('aria-hidden', 'true');
+                }
+            }
+
+            // Function untuk handle errors dengan user-friendly messages
+            handleError(message, error) {
+                console.error(message, error);
+                this.state.lastError = error;
+                this.utils.showNotification(message, 'error');
+            }
+
+            // Function untuk get reading progress dengan error handling
+            getReadingProgress(bookId) {
+                try {
+                    const saved = localStorage.getItem(`reading_progress_${bookId}`);
+                    return saved ? JSON.parse(saved) : null;
+                } catch (error) {
+                    console.error('Failed to get reading progress:', error);
+                    return null;
+                }
+            }
+
+            // Function untuk get reading status berdasarkan progress percentage
+            getReadingStatus(progressPercentage) {
+                if (progressPercentage === 0) return 'Belum Dibaca';
+                if (progressPercentage === 100) return 'Selesai';
+                return 'Sedang Dibaca';
+            }
+
+            // Add more methods here untuk complete functionality...
+            // This is a foundation untuk professional library management system
+        }
+
+        // Initialize library page saat DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.libraryManager = new LibraryPageManager();
+            window.libraryManager.init();
+        });
+
+        // Cleanup saat page unload
+        window.addEventListener('beforeunload', () => {
+            if (window.libraryManager && window.libraryManager.cleanup) {
+                window.libraryManager.cleanup();
+            }
+        });
+    </script>
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+    <script src="js/mobile-nav.js"></script>
+</body>
+
+</html>

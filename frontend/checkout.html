@@ -1,0 +1,1008 @@
+<!-- /pdf-bookstore/frontend/checkout.html -->
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - PDF Bookstore</title>
+    <meta name="description" content="Checkout dan pembayaran buku digital di PDF Bookstore. Pembayaran aman dengan Midtrans.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/improvements.css">
+    <link rel="stylesheet" href="css/modern-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Midtrans Snap -->
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="YOUR_CLIENT_KEY"></script>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Processing payment...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <!-- Brand Logo -->
+                <div class="brand">
+                    <a href="index.html" class="brand-link">
+                        <div class="brand-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="brand-text">PDF Bookstore</span>
+                    </a>
+                </div>
+
+                <!-- Checkout Progress -->
+                <div class="checkout-progress">
+                    <div class="progress-step completed">
+                        <div class="step-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span class="step-label">Cart</span>
+                    </div>
+                    <div class="progress-line completed"></div>
+                    <div class="progress-step active">
+                        <div class="step-icon">
+                            <span>2</span>
+                        </div>
+                        <span class="step-label">Payment</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step">
+                        <div class="step-icon">
+                            <span>3</span>
+                        </div>
+                        <span class="step-label">Complete</span>
+                    </div>
+                </div>
+
+                <!-- User Info -->
+                <div class="user-info" id="user-info">
+                    <img src="https://via.placeholder.com/32x32" alt="User" class="user-avatar" id="user-avatar">
+                    <span class="user-name" id="user-name">User</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb-section">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="index.html" class="breadcrumb-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <span class="breadcrumb-separator">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+                <a href="#" class="breadcrumb-item" id="back-to-cart">Cart</a>
+                <span class="breadcrumb-separator">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+                <span class="breadcrumb-item active">Checkout</span>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="checkout-main">
+        <div class="container">
+            <div class="checkout-container">
+                <!-- Checkout Form -->
+                <div class="checkout-form-section">
+                    <div class="section-header">
+                        <h1>Checkout</h1>
+                        <p>Review pesanan dan lengkapi pembayaran</p>
+                    </div>
+
+                    <!-- Customer Information -->
+                    <div class="checkout-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-user"></i> Informasi Pembeli
+                        </h2>
+                        <div class="customer-info" id="customer-info">
+                            <div class="info-card">
+                                <div class="info-item">
+                                    <span class="info-label">Nama:</span>
+                                    <span class="info-value" id="customer-name">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Email:</span>
+                                    <span class="info-value" id="customer-email">Loading...</span>
+                                </div>
+                                <button class="btn btn-outline btn-small edit-info-btn" id="edit-info-btn">
+                                    <i class="fas fa-edit"></i>
+                                    Edit Info
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="checkout-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-shopping-cart"></i> Items Pesanan
+                        </h2>
+                        <div class="order-items" id="order-items">
+                            <!-- Dynamic order items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="checkout-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-credit-card"></i> Metode Pembayaran
+                        </h2>
+                        <div class="payment-methods">
+                            <div class="payment-method-card">
+                                <div class="payment-header">
+                                    <div class="payment-logo">
+                                        <img src="https://via.placeholder.com/120x40?text=Midtrans" alt="Midtrans">
+                                    </div>
+                                    <div class="payment-info">
+                                        <h3>Midtrans Payment Gateway</h3>
+                                        <p>Pembayaran aman dan terpercaya</p>
+                                    </div>
+                                </div>
+                                <div class="payment-options">
+                                    <div class="payment-option">
+                                        <i class="fas fa-credit-card"></i>
+                                        <span>Credit Card / Debit Card</span>
+                                    </div>
+                                    <div class="payment-option">
+                                        <i class="fas fa-university"></i>
+                                        <span>Bank Transfer</span>
+                                    </div>
+                                    <div class="payment-option">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>E-Wallet (GoPay, OVO, DANA)</span>
+                                    </div>
+                                    <div class="payment-option">
+                                        <i class="fas fa-qrcode"></i>
+                                        <span>QRIS</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="checkout-section">
+                        <div class="terms-section">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="terms-agreement" required>
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-text">
+                                    Saya setuju dengan <a href="#terms" class="terms-link">Syarat & Ketentuan</a> 
+                                    dan <a href="#privacy" class="terms-link">Kebijakan Privasi</a>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary-section">
+                    <div class="order-summary-card">
+                        <h2 class="summary-title">
+                            <i class="fas fa-receipt"></i> Ringkasan Pesanan
+                        </h2>
+
+                        <!-- Order Details -->
+                        <div class="order-details" id="order-details">
+                            <!-- Dynamic order summary will be loaded here -->
+                        </div>
+
+                        <!-- Price Breakdown -->
+                        <div class="price-breakdown">
+                            <div class="price-item">
+                                <span class="price-label">Subtotal:</span>
+                                <span class="price-value" id="subtotal">Rp 0</span>
+                            </div>
+                            <div class="price-item discount-item" id="discount-item" style="display: none;">
+                                <span class="price-label">Diskon:</span>
+                                <span class="price-value discount" id="discount-amount">-Rp 0</span>
+                            </div>
+                            <div class="price-item">
+                                <span class="price-label">Pajak (11%):</span>
+                                <span class="price-value" id="tax-amount">Rp 0</span>
+                            </div>
+                            <div class="price-divider"></div>
+                            <div class="price-item total-item">
+                                <span class="price-label">Total:</span>
+                                <span class="price-value total" id="total-amount">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <!-- Payment Button -->
+                        <div class="payment-action">
+                            <button class="btn btn-primary btn-large btn-block payment-btn" id="payment-btn" disabled>
+                                <i class="fas fa-lock"></i>
+                                <span>Bayar Sekarang</span>
+                            </button>
+                            <p class="payment-security">
+                                <i class="fas fa-shield-alt"></i> Pembayaran 100% aman dan terenkripsi
+                            </p>
+                        </div>
+
+                        <!-- Money Back Guarantee -->
+                        <div class="guarantee-section">
+                            <div class="guarantee-item">
+                                <i class="fas fa-undo"></i>
+                                <span>30 hari garansi uang kembali</span>
+                            </div>
+                            <div class="guarantee-item">
+                                <i class="fas fa-download"></i>
+                                <span>Download selamanya</span>
+                            </div>
+                            <div class="guarantee-item">
+                                <i class="fas fa-headset"></i>
+                                <span>Customer support 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="trust-badges">
+                        <h3>Pembayaran Aman</h3>
+                        <div class="badges-grid">
+                            <div class="trust-badge">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>SSL Encrypted</span>
+                            </div>
+                            <div class="trust-badge">
+                                <i class="fas fa-lock"></i>
+                                <span>PCI Compliant</span>
+                            </div>
+                            <div class="trust-badge">
+                                <i class="fas fa-certificate"></i>
+                                <span>Verified Merchant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer checkout-footer">
+        <div class="container">
+            <div class="footer-simple">
+                <div class="footer-brand">
+                    <div class="brand">
+                        <div class="brand-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="brand-text">PDF Bookstore</span>
+                    </div>
+                </div>
+                <div class="footer-links-simple">
+                    <a href="#help">Help Center</a>
+                    <a href="#contact">Contact Support</a>
+                    <a href="#privacy">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Edit Info Modal -->
+    <div class="modal" id="edit-info-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Informasi Pembeli</h3>
+                <button class="modal-close" id="edit-info-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-info-form">
+                    <div class="form-group">
+                        <label for="edit-name" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Nama Lengkap
+                        </label>
+                        <input type="text" id="edit-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email" class="form-label">
+                            <i class="fas fa-envelope"></i>
+                            Email Address
+                        </label>
+                        <input type="email" id="edit-email" class="form-input" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Info</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Function untuk initialize checkout page - implementasi CLEAN-ARSY standards
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkoutPage = new CheckoutPageHandler();
+            checkoutPage.init();
+        });
+
+        class CheckoutPageHandler {
+            constructor() {
+                this.orderData = null;
+                this.cartItems = [];
+                this.promoCode = null;
+                this.api = new ApiClient(); // dari js/api.js
+                this.auth = new AuthManager(); // dari js/auth.js
+                this.cart = new CartManager(); // dari js/cart.js
+                this.payment = new PaymentManager(); // dari js/payment.js
+            }
+
+            // Function untuk initialize checkout page
+            async init() {
+                // Check authentication
+                if (!this.auth.isAuthenticated()) {
+                    Utils.showNotification('Silakan login terlebih dahulu', 'warning');
+                    window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+                    return;
+                }
+
+                this.setupEventListeners();
+                await this.loadUserInfo();
+                await this.loadCartItems();
+                this.calculateTotals();
+                console.log('Checkout page initialized successfully');
+            }
+
+            // Function untuk setup event listeners
+            setupEventListeners() {
+                // Terms agreement checkbox
+                document.getElementById('terms-agreement').addEventListener('change', () => {
+                    this.validatePaymentButton();
+                });
+
+                // Payment button
+                document.getElementById('payment-btn').addEventListener('click', () => {
+                    this.processPayment();
+                });
+
+                // Edit info modal
+                document.getElementById('edit-info-btn').addEventListener('click', () => {
+                    this.showEditInfoModal();
+                });
+                document.getElementById('edit-info-close').addEventListener('click', () => {
+                    this.hideEditInfoModal();
+                });
+                document.getElementById('cancel-edit-btn').addEventListener('click', () => {
+                    this.hideEditInfoModal();
+                });
+                document.getElementById('edit-info-form').addEventListener('submit', (e) => {
+                    this.updateUserInfo(e);
+                });
+
+                document.getElementById('promo-code').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.applyPromoCode();
+                });
+
+                // Back to cart
+                document.getElementById('back-to-cart').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.history.back();
+                });
+            }
+
+            // Function untuk load user information
+            async loadUserInfo() {
+                try {
+                    const user = this.auth.getCurrentUser();
+
+                    if (user) {
+                        document.getElementById('customer-name').textContent = user.name || 'User';
+                        document.getElementById('customer-email').textContent = user.email || 'email@example.com';
+                        document.getElementById('user-name').textContent = user.name || 'User';
+
+                        // Set avatar jika ada
+                        if (user.avatar) {
+                            document.getElementById('user-avatar').src = user.avatar;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading user info:', error);
+                }
+            }
+
+            // Function untuk load cart items
+            async loadCartItems() {
+                try {
+                    Utils.showLoading('Loading cart items...');
+
+                    // Get cart items from CartManager - dari js/cart.js line 89
+                    this.cartItems = await this.cart.getItems();
+
+                    if (!this.cartItems || this.cartItems.length === 0) {
+                        Utils.showNotification('Keranjang kosong', 'warning');
+                        setTimeout(() => window.location.href = 'index.html', 2000);
+                        return;
+                    }
+
+                    this.renderOrderItems();
+                    this.renderOrderSummary();
+
+                } catch (error) {
+                    console.error('Error loading cart items:', error);
+                    Utils.showNotification('Gagal memuat items keranjang', 'error');
+                } finally {
+                    Utils.hideLoading();
+                }
+            }
+
+            // Function untuk render order items
+            renderOrderItems() {
+                    const container = document.getElementById('order-items');
+
+                    if (!this.cartItems.length) {
+                        container.innerHTML = '<p class="empty-cart">Keranjang kosong</p>';
+                        return;
+                    }
+
+                    const itemsHTML = this.cartItems.map(item => `
+                    <div class="order-item" data-book-id="${item.book.id}">
+                        <div class="item-image">
+                            <img src="${item.book.cover_url || 'https://via.placeholder.com/80x120'}" alt="${item.book.title}">
+                        </div>
+                        <div class="item-details">
+                            <h3 class="item-title">${item.book.title}</h3>
+                            <p class="item-author">oleh ${item.book.author}</p>
+                            <div class="item-meta">
+                                <span class="item-category">${item.book.category || 'General'}</span>
+                                <span class="item-pages">${item.book.pages || 0} halaman</span>
+                            </div>
+                        </div>
+                        <div class="item-quantity">
+                            <span class="quantity-label">Qty:</span>
+                            <span class="quantity-value">${item.quantity}</span>
+                        </div>
+                        <div class="item-price">
+                            <div class="price-current">${Utils.formatCurrency(parseFloat(item.book.price))}</div>
+                            ${item.book.original_price && item.book.original_price > item.book.price ? 
+                                `<div class="price-original">${Utils.formatCurrency(parseFloat(item.book.original_price))}</div>` : 
+                                ''
+                            }
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = itemsHTML;
+            }
+
+            // Function untuk render order summary
+            renderOrderSummary() {
+                const container = document.getElementById('order-details');
+                
+                const summaryHTML = `
+                    <div class="summary-items">
+                        ${this.cartItems.map(item => `
+                            <div class="summary-item">
+                                <span class="summary-item-name">${item.book.title}</span>
+                                <span class="summary-item-price">${Utils.formatCurrency(parseFloat(item.book.price) * item.quantity)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                container.innerHTML = summaryHTML;
+            }
+
+            // Function untuk calculate totals
+            calculateTotals() {
+                let subtotal = 0;
+                
+                this.cartItems.forEach(item => {
+                    subtotal += parseFloat(item.book.price) * item.quantity;
+                });
+                
+                // Apply discount jika ada promo
+                let discount = 0;
+                if (this.promoCode && this.promoCode.discount_amount) {
+                    discount = this.promoCode.discount_type === 'percentage' ? 
+                        (subtotal * this.promoCode.discount_amount / 100) : 
+                        this.promoCode.discount_amount;
+                }
+                
+                const discountedSubtotal = subtotal - discount;
+                const tax = discountedSubtotal * 0.11; // 11% PPN
+                const total = discountedSubtotal + tax;
+                
+                // Update UI
+                document.getElementById('subtotal').textContent = Utils.formatCurrency(subtotal);
+                document.getElementById('tax-amount').textContent = Utils.formatCurrency(tax);
+                document.getElementById('total-amount').textContent = Utils.formatCurrency(total);
+                
+                // Show/hide discount
+                const discountItem = document.getElementById('discount-item');
+                if (discount > 0) {
+                    document.getElementById('discount-amount').textContent = `-${Utils.formatCurrency(discount)}`;
+                    discountItem.style.display = 'flex';
+                } else {
+                    discountItem.style.display = 'none';
+                }
+                
+                // Store untuk payment processing
+                this.orderData = {
+                    items: this.cartItems,
+                    subtotal: subtotal,
+                    discount: discount,
+                    tax: tax,
+                    total: total,
+                    promo_code: this.promoCode?.code || null
+                };
+            }
+
+            // Function untuk validate payment button
+            validatePaymentButton() {
+                const termsAgreed = document.getElementById('terms-agreement').checked;
+                const hasItems = this.cartItems && this.cartItems.length > 0;
+                
+                const paymentBtn = document.getElementById('payment-btn');
+                paymentBtn.disabled = !(termsAgreed && hasItems);
+            }
+
+            // Function untuk apply promo code
+            async applyPromoCode() {
+                const promoInput = document.getElementById('promo-code');
+                const promoMessage = document.getElementById('promo-message');
+                const code = promoInput.value.trim();
+                
+                if (!code) {
+                    promoMessage.innerHTML = '<span class="error">Masukkan kode promo</span>';
+                    return;
+                }
+                
+                try {
+                    Utils.showLoading('Validating promo code...');
+                    
+                    // Validate promo code via API - dari js/api.js line 267
+                    const response = await this.api.promo.validate(code);
+                    
+                    if (response.success && response.promo) {
+                        this.promoCode = response.promo;
+                        this.calculateTotals();
+                        promoMessage.innerHTML = `<span class="success">Promo "${code}" berhasil diterapkan!</span>`;
+                        promoInput.disabled = true;
+                        document.getElementById('apply-promo-btn').textContent = 'Applied';
+                        document.getElementById('apply-promo-btn').disabled = true;
+                        
+                        Utils.showNotification(`Selamat! Kamu mendapat diskon ${response.promo.discount_amount}${response.promo.discount_type === 'percentage' ? '%' : ''}`, 'success');
+                    } else {
+                        throw new Error(response.message || 'Kode promo tidak valid');
+                    }
+                    
+                } catch (error) {
+                    console.error('Promo code error:', error);
+                    promoMessage.innerHTML = `<span class="error">${error.message}</span>`;
+                } finally {
+                    Utils.hideLoading();
+                }
+            }
+
+            // Function untuk process payment
+            async processPayment() {
+                try {
+                    Utils.showLoading('Creating order...');
+                    
+                    // Create order via API - dari js/api.js line 234
+                    const orderRequest = {
+                        items: this.cartItems.map(item => ({
+                            book_id: item.book.id,
+                            quantity: item.quantity,
+                            price: item.book.price
+                        })),
+                        promo_code: this.promoCode?.code || null,
+                        total_amount: this.orderData.total
+                    };
+                    
+                    const response = await this.api.orders.create(orderRequest);
+                    
+                    if (response.success && response.snap_token) {
+                        Utils.hideLoading();
+                        
+                        // Initialize Midtrans Snap payment - dari js/payment.js line 45
+                        await this.payment.processSnapPayment(response.snap_token, {
+                            onSuccess: (result) => this.handlePaymentSuccess(result, response.order_id),
+                            onPending: (result) => this.handlePaymentPending(result, response.order_id),
+                            onError: (result) => this.handlePaymentError(result),
+                            onClose: () => this.handlePaymentClose()
+                        });
+                        
+                    } else {
+                        throw new Error(response.message || 'Gagal membuat pesanan');
+                    }
+                    
+                } catch (error) {
+                    console.error('Payment processing error:', error);
+                    Utils.showNotification(error.message || 'Gagal memproses pembayaran', 'error');
+                    Utils.hideLoading();
+                }
+            }
+
+            // Function untuk handle payment success
+            async handlePaymentSuccess(result, orderId) {
+                try {
+                    Utils.showLoading('Verifying payment...');
+                    
+                    // Verify payment dengan backend - dari js/api.js line 278
+                    const verification = await this.api.payments.verify(orderId, result.transaction_id);
+                    
+                    if (verification.success) {
+                        // Clear cart setelah payment berhasil
+                        await this.cart.clear();
+                        
+                        Utils.showNotification('Pembayaran berhasil! Redirecting...', 'success');
+                        
+                        // Redirect ke success page
+                        setTimeout(() => {
+                            window.location.href = `library.html?order=${orderId}&success=true`;
+                        }, 2000);
+                    } else {
+                        throw new Error('Payment verification failed');
+                    }
+                    
+                } catch (error) {
+                    console.error('Payment verification error:', error);
+                    Utils.showNotification('Terjadi kesalahan saat verifikasi pembayaran', 'error');
+                } finally {
+                    Utils.hideLoading();
+                }
+            }
+
+            // Function untuk handle payment pending
+            handlePaymentPending(result, orderId) {
+                Utils.showNotification('Pembayaran pending. Silakan selesaikan pembayaran.', 'warning');
+                
+                // Redirect ke pending page atau stay di checkout
+                setTimeout(() => {
+                    window.location.href = `library.html?order=${orderId}&pending=true`;
+                }, 2000);
+            }
+
+            // Function untuk handle payment error
+            handlePaymentError(result) {
+                console.error('Payment error:', result);
+                Utils.showNotification('Pembayaran gagal. Silakan coba lagi.', 'error');
+            }
+
+            // Function untuk handle payment close
+            handlePaymentClose() {
+                Utils.showNotification('Pembayaran dibatalkan', 'info');
+            }
+
+            // Function untuk show edit info modal
+            showEditInfoModal() {
+                const user = this.auth.getCurrentUser();
+                
+                document.getElementById('edit-name').value = user.name || '';
+                document.getElementById('edit-email').value = user.email || '';
+                document.getElementById('edit-info-modal').style.display = 'flex';
+            }
+
+            // Function untuk hide edit info modal
+            hideEditInfoModal() {
+                document.getElementById('edit-info-modal').style.display = 'none';
+            }
+
+            // Function untuk update user info
+            async updateUserInfo(event) {
+                event.preventDefault();
+                
+                const formData = new FormData(event.target);
+                const updateData = {
+                    name: formData.get('name') || document.getElementById('edit-name').value,
+                    email: formData.get('email') || document.getElementById('edit-email').value
+                };
+                
+                try {
+                    Utils.showLoading('Updating info...');
+                    
+                    // Update user info via API - dari js/api.js line 189
+                    const response = await this.api.user.update(updateData);
+                    
+                    if (response.success) {
+                        // Update auth data dengan info baru
+                        const updatedUser = { ...this.auth.getCurrentUser(), ...updateData };
+                        this.auth.updateUserData(updatedUser);
+                        
+                        // Update UI
+                        document.getElementById('customer-name').textContent = updateData.name;
+                        document.getElementById('customer-email').textContent = updateData.email;
+                        document.getElementById('user-name').textContent = updateData.name;
+                        
+                        this.hideEditInfoModal();
+                        Utils.showNotification('Informasi berhasil diupdate', 'success');
+                    } else {
+                        throw new Error(response.message || 'Gagal update informasi');
+                    }
+                    
+                } catch (error) {
+                    console.error('Update user info error:', error);
+                    Utils.showNotification(error.message || 'Gagal update informasi', 'error');
+                } finally {
+                    Utils.hideLoading();
+                }
+            }
+        }
+
+        // Monitor terms checkbox untuk enable/disable payment button
+        document.addEventListener('change', (e) => {
+            if (e.target.id === 'terms-agreement') {
+                const checkoutPage = window.checkoutPageInstance;
+                if (checkoutPage) {
+                    checkoutPage.validatePaymentButton();
+                }
+            }
+        });
+    </script>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+
+    <style>
+        /* Custom styles untuk checkout page */
+        
+        .checkout-main {
+            padding: var(--space-8) 0 var(--space-16) 0;
+            background: var(--gray-50);
+        }
+        
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: var(--space-12);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* Checkout Progress */
+        
+        .checkout-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-1);
+        }
+        
+        .step-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-full);
+            background: var(--gray-200);
+            color: var(--gray-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+        
+        .progress-step.completed .step-icon {
+            background: var(--success);
+            color: var(--white);
+        }
+        
+        .progress-step.active .step-icon {
+            background: var(--primary-500);
+            color: var(--white);
+        }
+        
+        .step-label {
+            font-size: var(--font-size-xs);
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+        
+        .progress-line {
+            width: 40px;
+            height: 2px;
+            background: var(--gray-200);
+        }
+        
+        .progress-line.completed {
+            background: var(--success);
+        }
+        /* Order Items */
+        
+        .order-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto auto;
+            gap: var(--space-4);
+            align-items: center;
+            padding: var(--space-6);
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--space-4);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .item-image img {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+        }
+        
+        .item-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+        
+        .item-author {
+            color: var(--gray-600);
+            margin-bottom: var(--space-2);
+        }
+        
+        .item-meta {
+            display: flex;
+            gap: var(--space-4);
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+        }
+        
+        .price-current {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--primary-600);
+        }
+        
+        .price-original {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            text-decoration: line-through;
+        }
+        /* Payment Methods */
+        
+        .payment-method-card {
+            background: var(--white);
+            border: 2px solid var(--primary-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+        }
+        
+        .payment-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-3);
+        }
+        
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: var(--font-size-sm);
+            color: var(--gray-700);
+        }
+        
+        .payment-option i {
+            color: var(--primary-500);
+            width: 16px;
+        }
+        /* Order Summary */
+        
+        .order-summary-card {
+            background: var(--white);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+            position: sticky;
+            top: var(--space-8);
+        }
+        
+        .price-breakdown {
+            margin: var(--space-6) 0;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3);
+        }
+        
+        .price-item.total-item {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+        
+        .price-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: var(--space-4) 0;
+        }
+        
+        .discount {
+            color: var(--success) !important;
+        }
+        
+        .total {
+            color: var(--primary-600) !important;
+        }
+        
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                gap: var(--space-8);
+            }
+            .order-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: var(--space-3);
+            }
+            .checkout-progress {
+                display: none;
+            }
+        }
+    </style>
+
+    <script src="js/mobile-nav.js"></script>
+</body>
+
+</html>

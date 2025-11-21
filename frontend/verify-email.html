@@ -1,0 +1,340 @@
+<!-- /pdf-bookstore/frontend/verify-email.html -->
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Email - PDF Bookstore</title>
+    <meta name="description" content="Verifikasi alamat email Anda.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/improvements.css">
+    <link rel="stylesheet" href="css/modern-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .verification-container {
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .verification-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        .verification-icon.success {
+            color: #10b981;
+        }
+
+        .verification-icon.error {
+            color: #ef4444;
+        }
+
+        .verification-icon.loading {
+            color: #4f46e5;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .verification-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .verification-message {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body class="auth-page">
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Memverifikasi email...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Auth Background Animation -->
+    <div class="auth-background">
+        <div class="floating-book book-1"></div>
+        <div class="floating-book book-2"></div>
+        <div class="floating-book book-3"></div>
+        <div class="gradient-overlay"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="header auth-header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="brand">
+                    <a href="index.html" class="brand-link">
+                        <div class="brand-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="brand-text">PDF Bookstore</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="auth-main">
+        <div class="container">
+            <!-- Verification States -->
+            <div class="verification-container">
+                <!-- Loading State -->
+                <div id="loadingState" style="display: block;">
+                    <div class="verification-icon loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <h1 class="verification-title">Memverifikasi Email...</h1>
+                    <p class="verification-message">
+                        Mohon tunggu sebentar, kami sedang memverifikasi alamat email Anda.
+                    </p>
+                </div>
+
+                <!-- Success State -->
+                <div id="successState" style="display: none;">
+                    <div class="verification-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h1 class="verification-title">Email Berhasil Diverifikasi!</h1>
+                    <p class="verification-message">
+                        Selamat! Email Anda telah berhasil diverifikasi.
+                        Sekarang Anda dapat mengakses semua fitur di PDF Bookstore.
+                    </p>
+                    <div class="action-buttons">
+                        <a href="index.html" class="btn btn-primary">
+                            <i class="fas fa-home"></i>
+                            Kembali ke Beranda
+                        </a>
+                        <a href="library.html" class="btn btn-secondary">
+                            <i class="fas fa-book-reader"></i>
+                            Lihat Library
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorState" style="display: none;">
+                    <div class="verification-icon error">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h1 class="verification-title">Verifikasi Gagal</h1>
+                    <p class="verification-message" id="errorMessage">
+                        Link verifikasi tidak valid atau sudah expired. Silakan minta link verifikasi baru.
+                    </p>
+                    <div class="action-buttons">
+                        <button id="resendBtn" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Kirim Ulang Email Verifikasi
+                        </button>
+                        <a href="login.html" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            Kembali ke Login
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Already Verified State -->
+                <div id="alreadyVerifiedState" style="display: none;">
+                    <div class="verification-icon success">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <h1 class="verification-title">Email Sudah Diverifikasi</h1>
+                    <p class="verification-message">
+                        Email Anda sudah terverifikasi sebelumnya. Tidak perlu verifikasi ulang.
+                    </p>
+                    <div class="action-buttons">
+                        <a href="index.html" class="btn btn-primary">
+                            <i class="fas fa-home"></i>
+                            Kembali ke Beranda
+                        </a>
+                        <a href="login.html" class="btn btn-secondary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            const loadingState = document.getElementById('loadingState');
+            const successState = document.getElementById('successState');
+            const errorState = document.getElementById('errorState');
+            const alreadyVerifiedState = document.getElementById('alreadyVerifiedState');
+            const errorMessage = document.getElementById('errorMessage');
+            const resendBtn = document.getElementById('resendBtn');
+
+            // Check if token exists
+            if (!token) {
+                showError('Token verifikasi tidak ditemukan dalam URL.');
+                return;
+            }
+
+            // Auto-verify on page load
+            await verifyEmail(token);
+
+            // Resend button handler
+            resendBtn.addEventListener('click', async () => {
+                if (!authManager.isAuthenticated()) {
+                    showNotification('Silakan login terlebih dahulu untuk mengirim ulang email verifikasi', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                    return;
+                }
+
+                try {
+                    resendBtn.disabled = true;
+                    resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+                    const response = await api.sendVerificationEmail();
+
+                    if (response.success) {
+                        showNotification('Email verifikasi baru telah dikirim!', 'success');
+                        resendBtn.innerHTML = '<i class="fas fa-check"></i> Email Terkirim';
+                    } else {
+                        throw new Error(response.message || 'Gagal mengirim email');
+                    }
+                } catch (error) {
+                    showNotification(error.message || 'Gagal mengirim email verifikasi', 'error');
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Ulang Email Verifikasi';
+                }
+            });
+
+            async function verifyEmail(verificationToken) {
+                try {
+                    showLoading();
+
+                    const response = await api.verifyEmail(verificationToken);
+
+                    hideLoading();
+
+                    if (response.success) {
+                        if (response.message && response.message.toLowerCase().includes('already')) {
+                            showAlreadyVerified();
+                        } else {
+                            showSuccess();
+                        }
+
+                        // If user is logged in, refresh their profile
+                        if (authManager.isAuthenticated()) {
+                            try {
+                                await authManager.fetchUserProfile();
+                            } catch (e) {
+                                console.warn('Failed to refresh profile:', e);
+                            }
+                        }
+                    } else {
+                        throw new Error(response.message || 'Verification failed');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    showError(error.message || 'Link verifikasi tidak valid atau sudah expired. Silakan minta link verifikasi baru.');
+                }
+            }
+
+            function showSuccess() {
+                loadingState.style.display = 'none';
+                errorState.style.display = 'none';
+                alreadyVerifiedState.style.display = 'none';
+                successState.style.display = 'block';
+            }
+
+            function showError(message) {
+                loadingState.style.display = 'none';
+                successState.style.display = 'none';
+                alreadyVerifiedState.style.display = 'none';
+                errorState.style.display = 'block';
+                errorMessage.textContent = message;
+            }
+
+            function showAlreadyVerified() {
+                loadingState.style.display = 'none';
+                successState.style.display = 'none';
+                errorState.style.display = 'none';
+                alreadyVerifiedState.style.display = 'block';
+            }
+
+            function showLoading() {
+                document.getElementById('loading-container').style.display = 'flex';
+            }
+
+            function hideLoading() {
+                document.getElementById('loading-container').style.display = 'none';
+            }
+
+            function showNotification(message, type = 'info') {
+                const container = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                `;
+                container.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add('fade-out');
+                    setTimeout(() => notification.remove(), 300);
+                }, 4000);
+            }
+        });
+    </script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,411 @@
+<!-- /pdf-bookstore/admin-panel/orders.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - PDF Bookstore Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/orders.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- REMOVED: Chart.js - tidak perlu di order page -->
+</head>
+
+<body class="admin-dashboard">
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message" id="loading-message">Loading orders...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-book-open"></i>
+                    <span class="sidebar-title">Bookstore Admin</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="books.html" class="nav-link">
+                            <i class="fas fa-book"></i>
+                            <span class="nav-text">Book Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="orders.html" class="nav-link active">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="nav-text">Orders</span>
+                            <span class="nav-badge" id="pending-orders-badge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="upload.html" class="nav-link">
+                            <i class="fas fa-upload"></i>
+                            <span class="nav-text">Upload Books</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="analytics.html" class="nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="nav-text">Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="users.html" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span class="nav-text">Users</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-divider"></div>
+
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../index.html" class="nav-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span class="nav-text">View Store</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" id="admin-logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="nav-text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Top Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Order Management</h1>
+                </div>
+
+                <div class="header-right">
+                    <!-- Real-time Stats -->
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Today's Orders</span>
+                            <span class="stat-value" id="header-today-orders">--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Today's Revenue</span>
+                            <span class="stat-value" id="header-today-revenue">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Admin Profile -->
+                    <div class="admin-profile">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="profile-info">
+                            <span class="profile-name" id="admin-name">Admin</span>
+                            <span class="profile-role">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Orders Management Content -->
+            <div class="dashboard-content">
+                <!-- Order Statistics Cards -->
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number" id="total-orders-stat">--</h3>
+                            <p class="stat-label">Total Orders</p>
+                            <span class="stat-change positive" id="orders-change">
+                                <i class="fas fa-arrow-up"></i>
+                                +0% from last month
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number" id="pending-orders-stat">--</h3>
+                            <p class="stat-label">Pending Orders</p>
+                            <span class="stat-change warning" id="pending-change">
+                                <i class="fas fa-clock"></i>
+                                Awaiting payment
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number" id="total-revenue-stat">--</h3>
+                            <p class="stat-label">Total Revenue</p>
+                            <span class="stat-change positive" id="revenue-change">
+                                <i class="fas fa-arrow-up"></i>
+                                +0% from last month
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-number" id="avg-order-value-stat">--</h3>
+                            <p class="stat-label">Avg Order Value</p>
+                            <span class="stat-change positive" id="aov-change">
+                                <i class="fas fa-chart-line"></i>
+                                Per transaction
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Action Bar -->
+                <section class="action-bar">
+                    <div class="action-left">
+                        <h3>Order List</h3>
+                        <span class="order-count" id="order-count">0 orders</span>
+                    </div>
+
+                    <div class="action-right">
+                        <div class="search-box">
+                            <input type="text" id="order-search" placeholder="Search orders..." class="search-input">
+                            <button class="search-btn" id="search-submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="search-clear" id="search-clear" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <select id="status-filter" class="filter-select">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="failed">Failed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                        <select id="payment-method-filter" class="filter-select">
+                            <option value="">All Payment Methods</option>
+                            <option value="credit_card">Credit Card</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="e_wallet">E-Wallet</option>
+                            <option value="qris">QRIS</option>
+                        </select>
+                        <button class="btn btn-outline" id="export-orders">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Orders Table -->
+                <section class="table-section">
+                    <div class="table-header">
+                        <div class="table-controls">
+                            <select id="items-per-page" class="filter-select">
+                                <option value="10">10 per page</option>
+                                <option value="25" selected>25 per page</option>
+                                <option value="50">50 per page</option>
+                                <option value="100">100 per page</option>
+                            </select>
+                            <button class="btn btn-outline" id="refresh-orders">
+                                <i class="fas fa-refresh"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="orders-table" id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-sort="order_number">
+                                        Order ID <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th>Customer</th>
+                                    <th>Book</th>
+                                    <th class="sortable" data-sort="amount">
+                                        Amount <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th>Payment Method</th>
+                                    <th>Status</th>
+                                    <th class="sortable" data-sort="created_at">
+                                        Created <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="actions-col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- Orders will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="empty-orders" style="display: none;">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>No Orders Found</h3>
+                        <p>No orders match your current filters.</p>
+                        <button class="btn btn-primary" id="clear-filters">
+                            <i class="fas fa-filter"></i>
+                            Clear Filters
+                        </button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="loading-state" id="loading-orders" style="display: none;">
+                        <div class="loading-content">
+                            <div class="spinner"></div>
+                            <p>Loading orders...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pagination -->
+                <section class="pagination-section">
+                    <div class="pagination-info">
+                        <span id="pagination-info">Showing 0 of 0 orders</span>
+                    </div>
+                    <div class="pagination-controls" id="pagination-controls">
+                        <!-- Pagination will be populated by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Order Analytics Summary -->
+                <section class="analytics-section">
+                    <div class="analytics-row">
+                        <div class="analytics-card">
+                            <div class="analytics-header">
+                                <h3 class="analytics-title">Payment Methods</h3>
+                                <button class="analytics-refresh" id="refresh-payment-methods">
+                                    <i class="fas fa-refresh"></i>
+                                </button>
+                            </div>
+                            <div class="analytics-content">
+                                <div class="payment-methods-list" id="payment-methods-list">
+                                    <!-- Payment methods will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="analytics-card">
+                            <div class="analytics-header">
+                                <h3 class="analytics-title">Recent Activities</h3>
+                                <button class="analytics-refresh" id="refresh-activities">
+                                    <i class="fas fa-refresh"></i>
+                                </button>
+                            </div>
+                            <div class="analytics-content">
+                                <div class="order-activities" id="order-activities">
+                                    <!-- Activities will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="order-details-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="modal-title">Order Details</h3>
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="order-details" id="order-details-content">
+                    <!-- Order details will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="modal-cancel">Close</button>
+                <button type="button" class="btn btn-primary" id="refresh-order-status">
+                    <i class="fas fa-refresh"></i>
+                    Refresh Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../frontend/js/utils.js"></script>
+    <script src="../frontend/js/api.js"></script>
+    <script src="../frontend/js/auth.js"></script>
+    <script src="js/admin-api.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/order-manager.js"></script>
+
+    <script>
+        // Initialize order management saat DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add error handling untuk initialization
+            try {
+                window.orderManager = new OrderManager();
+            } catch (error) {
+                console.error('Failed to initialize OrderManager:', error);
+
+                // Show user-friendly error
+                const container = document.querySelector('.dashboard-content');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="error-state" style="text-align: center; padding: 60px 20px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3em; color: #f59e0b; margin-bottom: 20px;"></i>
+                            <h3 style="color: #374151; margin-bottom: 10px;">Order Management Unavailable</h3>
+                            <p style="color: #6b7280; margin-bottom: 20px;">Unable to load order management system.</p>
+                            <button onclick="window.location.reload()" class="btn btn-primary">
+                                <i class="fas fa-refresh"></i> Retry
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

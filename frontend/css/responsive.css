@@ -1,0 +1,771 @@
+/* /pdf-bookstore/frontend/css/responsive.css */
+
+
+/* Mobile First Responsive Design */
+
+:root {
+    --font-size-xs-mobile: 0.7rem;
+    --font-size-sm-mobile: 0.8rem;
+    --font-size-base-mobile: 0.9rem;
+    --font-size-lg-mobile: 1rem;
+    --font-size-xl-mobile: 1.1rem;
+    --font-size-2xl-mobile: 1.3rem;
+    --font-size-3xl-mobile: 1.6rem;
+    --font-size-4xl-mobile: 2rem;
+    --font-size-5xl-mobile: 2.5rem;
+    --space-mobile-1: 0.2rem;
+    --space-mobile-2: 0.4rem;
+    --space-mobile-3: 0.6rem;
+    --space-mobile-4: 0.8rem;
+    --space-mobile-5: 1rem;
+    --space-mobile-6: 1.2rem;
+    --space-mobile-8: 1.6rem;
+    --space-mobile-10: 2rem;
+    --space-mobile-12: 2.4rem;
+    --space-mobile-16: 3.2rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+}
+
+
+/* MOBILE STYLES (320px - 767px) */
+
+@media (max-width: 767px) {
+    html {
+        font-size: 14px;
+    }
+    body {
+        font-size: var(--font-size-base-mobile);
+        line-height: 1.6;
+    }
+    .container {
+        padding: 0 var(--space-mobile-4);
+    }
+    h1 {
+        font-size: var(--font-size-3xl-mobile);
+    }
+    h2 {
+        font-size: var(--font-size-2xl-mobile);
+    }
+    h3 {
+        font-size: var(--font-size-xl-mobile);
+    }
+    h4 {
+        font-size: var(--font-size-lg-mobile);
+    }
+    h5 {
+        font-size: var(--font-size-base-mobile);
+    }
+    h6 {
+        font-size: var(--font-size-sm-mobile);
+    }
+    /* Header Mobile */
+    .header {
+        padding: var(--space-mobile-3) 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    .navbar {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+    .brand-text {
+        font-size: var(--font-size-lg-mobile);
+    }
+    .brand-icon {
+        width: 32px;
+        height: 32px;
+    }
+    /* Mobile Navigation */
+    .nav-menu {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: var(--white);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: var(--space-8);
+        gap: var(--space-4);
+        transition: left 0.3s ease;
+        box-shadow: var(--shadow-2xl);
+        z-index: 99;
+        overflow-y: auto;
+        margin: 0 !important;
+        max-width: none !important;
+    }
+    .nav-menu.active {
+        left: 0;
+    }
+    .nav-link {
+        padding: var(--space-4) var(--space-6) !important;
+        border-radius: var(--radius-lg);
+        font-size: var(--font-size-lg-mobile);
+        justify-content: flex-start;
+        border-bottom: 1px solid var(--gray-100);
+        min-width: auto !important;
+    }
+    .nav-actions {
+        gap: var(--space-mobile-3);
+    }
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        font-size: var(--font-size-sm-mobile);
+    }
+    /* Mobile Menu Toggle */
+    .mobile-toggle {
+        display: flex;
+        flex-direction: column;
+        width: 30px;
+        height: 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        justify-content: space-between;
+    }
+    .mobile-toggle span {
+        width: 100%;
+        height: 3px;
+        background: var(--gray-700);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    .mobile-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+    }
+    .mobile-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .mobile-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(8px, -8px);
+    }
+    /* Hide desktop elements */
+    .auth-actions,
+    /* Existing .auth-actions should be hidden directly for mobile */
+    .user-menu {
+        /* User menu also needs to be controlled for mobile */
+        display: none;
+    }
+    /* Search and Cart Sidebars for Mobile */
+    .search-overlay {
+        align-items: flex-start;
+        /* Align search content to top */
+    }
+    .search-container {
+        width: 100%;
+        max-width: none;
+        margin-top: 0;
+        border-radius: 0;
+        min-height: 100vh;
+        /* Make search overlay full height on mobile */
+        padding: var(--space-mobile-6);
+    }
+    .cart-sidebar>div {
+        max-width: 100%;
+        /* Cart sidebar full width on mobile */
+        border-radius: 0;
+    }
+    /* Show mobile auth in nav menu (added from previous analysis) */
+    .nav-menu .auth-actions-mobile {
+        /* Use a distinct class for mobile-specific auth actions */
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-mobile-4);
+        margin-top: var(--space-mobile-8);
+        padding-top: var(--space-mobile-6);
+        border-top: 1px solid var(--gray-200);
+    }
+    /* For authenticated user mobile menu */
+    .nav-menu .user-menu-mobile {
+        display: block;
+        /* Show only when nav-menu is active */
+        margin-top: var(--space-mobile-8);
+        padding-top: var(--space-mobile-6);
+        border-top: 1px solid var(--gray-200);
+    }
+    .nav-menu .user-profile {
+        padding: var(--space-mobile-4) var(--space-mobile-6);
+        justify-content: flex-start;
+        border: none;
+        background: var(--gray-50);
+        margin-bottom: var(--space-3);
+    }
+    .nav-menu .user-dropdown {
+        position: static;
+        display: block;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        min-width: unset;
+    }
+    .nav-menu .dropdown-item {
+        padding: var(--space-mobile-3) var(--space-mobile-6);
+        font-size: var(--font-size-sm-mobile);
+    }
+    /* Hero Section Mobile */
+    .hero {
+        padding: var(--space-mobile-12) 0;
+        text-align: center;
+    }
+    .hero-content {
+        grid-template-columns: 1fr;
+        /* Stack content vertically */
+        gap: var(--space-mobile-8);
+    }
+    .hero-visual {
+        height: 300px;
+        /* Adjust height for mobile */
+    }
+    .floating-book {
+        /* Adjust mobile floating book sizes */
+        width: 80px;
+        height: 100px;
+    }
+    .floating-book.book-1 {
+        top: 10%;
+        left: 10%;
+    }
+    .floating-book.book-2 {
+        top: 5%;
+        right: 5%;
+    }
+    .floating-book.book-3 {
+        bottom: 20%;
+        left: 5%;
+    }
+    .floating-book.book-4 {
+        bottom: 5%;
+        right: 10%;
+    }
+    .hero-title {
+        font-size: var(--font-size-4xl-mobile);
+        margin-bottom: var(--space-mobile-6);
+        line-height: 1.2;
+    }
+    .hero-description {
+        font-size: var(--font-size-lg-mobile);
+        margin-bottom: var(--space-mobile-8);
+    }
+    .hero-actions {
+        flex-direction: column;
+        gap: var(--space-mobile-4);
+        align-items: center;
+    }
+    .hero-stats {
+        display: grid;
+        /* Use grid for stats on mobile for better alignment */
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-mobile-6);
+        margin-top: var(--space-mobile-12);
+        justify-items: center;
+        /* Center items in grid */
+    }
+    .stat-number {
+        font-size: var(--font-size-2xl-mobile);
+    }
+    .stat-label {
+        font-size: var(--font-size-sm-mobile);
+    }
+    /* Books Grid Mobile */
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-mobile-4);
+    }
+    .book-card {
+        border-radius: var(--radius-lg);
+    }
+    .book-card .book-cover {
+        height: 200px;
+    }
+    .book-card .book-info {
+        padding: var(--space-mobile-3);
+    }
+    .book-card .book-title {
+        font-size: var(--font-size-sm-mobile);
+        margin-bottom: var(--space-mobile-2);
+    }
+    .book-card .book-author {
+        font-size: var(--font-size-xs-mobile);
+        margin-bottom: var(--space-mobile-2);
+    }
+    .book-card .book-price {
+        font-size: var(--font-size-base-mobile);
+    }
+    /* Buttons Mobile */
+    .btn {
+        padding: var(--space-mobile-3) var(--space-mobile-6);
+        font-size: var(--font-size-base-mobile);
+        min-height: 44px;
+    }
+    .btn-small {
+        padding: var(--space-mobile-2) var(--space-mobile-4);
+        font-size: var(--font-size-sm-mobile);
+        min-height: 36px;
+    }
+    .btn-large {
+        padding: var(--space-mobile-5) var(--space-mobile-8);
+        font-size: var(--font-size-lg-mobile);
+        min-height: 52px;
+    }
+    /* Auth Pages Mobile */
+    .auth-main {
+        padding: var(--space-mobile-8) 0;
+        min-height: calc(100vh - 120px);
+    }
+    .auth-container {
+        grid-template-columns: 1fr;
+        gap: var(--space-mobile-8);
+    }
+    .auth-welcome {
+        order: 2;
+        padding: var(--space-mobile-4);
+        text-align: center;
+    }
+    .auth-form-container {
+        order: 1;
+    }
+    .auth-card {
+        padding: var(--space-mobile-8);
+        border-radius: var(--radius-xl);
+        margin: 0 var(--space-mobile-2);
+    }
+    .welcome-title {
+        font-size: var(--font-size-3xl-mobile);
+        margin-bottom: var(--space-mobile-4);
+    }
+    .welcome-subtitle {
+        font-size: var(--font-size-base-mobile);
+        margin-bottom: var(--space-mobile-6);
+    }
+    .welcome-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-mobile-4);
+        margin-top: var(--space-mobile-6);
+    }
+    .welcome-features {
+        display: none;
+        /* Hide welcome features on mobile to save space */
+    }
+    .feature-item {
+        margin-bottom: var(--space-mobile-4);
+    }
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        font-size: var(--font-size-base-mobile);
+    }
+    .social-login {
+        grid-template-columns: 1fr;
+        gap: var(--space-mobile-3);
+    }
+    /* Book Detail Mobile */
+    .book-detail-container {
+        grid-template-columns: 1fr;
+        gap: var(--space-mobile-8);
+    }
+    .book-media {
+        position: static;
+        max-width: 280px;
+        margin: 0 auto var(--space-mobile-8);
+    }
+    .book-title {
+        font-size: var(--font-size-3xl-mobile);
+        margin-bottom: var(--space-mobile-3);
+        text-align: center;
+    }
+    .book-author {
+        font-size: var(--font-size-lg-mobile);
+        margin-bottom: var(--space-mobile-6);
+        text-align: center;
+    }
+    .book-meta {
+        grid-template-columns: 1fr;
+        gap: var(--space-mobile-3);
+    }
+    .book-purchase {
+        padding: var(--space-mobile-6);
+        border-radius: var(--radius-xl);
+    }
+    .price-current {
+        font-size: var(--font-size-3xl-mobile);
+        text-align: center;
+    }
+    .purchase-benefits .benefit-list {
+        grid-template-columns: 1fr;
+        gap: var(--space-mobile-3);
+    }
+    /* Tabs Mobile */
+    .section-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .section-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    .tab-btn {
+        padding: var(--space-mobile-3) var(--space-mobile-5);
+        font-size: var(--font-size-sm-mobile);
+        white-space: nowrap;
+        min-width: 120px;
+    }
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-mobile-4);
+    }
+    /* Checkout Mobile */
+    .checkout-container {
+        grid-template-columns: 1fr;
+        gap: var(--space-mobile-8);
+    }
+    .checkout-progress {
+        display: none;
+    }
+    .order-item {
+        grid-template-columns: 80px 1fr auto;
+        gap: var(--space-mobile-3);
+        padding: var(--space-mobile-4);
+    }
+    .item-image img {
+        width: 60px;
+        height: 90px;
+    }
+    .item-title {
+        font-size: var(--font-size-base-mobile);
+    }
+    .item-author {
+        font-size: var(--font-size-xs-mobile);
+    }
+    .item-meta {
+        display: none;
+    }
+    .order-summary-card {
+        position: static;
+        padding: var(--space-mobile-6);
+        order: -1;
+    }
+    /* Footer Mobile */
+    .footer {
+        padding: var(--space-mobile-12) 0 var(--space-mobile-8);
+    }
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: var(--space-mobile-8);
+        text-align: center;
+    }
+    .footer-section {
+        margin-bottom: var(--space-mobile-6);
+    }
+    .footer-links {
+        flex-direction: column;
+        gap: var(--space-mobile-3);
+    }
+    .footer-bottom {
+        flex-direction: column;
+        gap: var(--space-mobile-4);
+        text-align: center;
+    }
+    .footer-links-bottom {
+        flex-direction: column;
+        gap: var(--space-mobile-3);
+    }
+    /* Modal Mobile */
+    .modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+        margin: var(--space-mobile-4);
+    }
+    .modal-header {
+        padding: var(--space-mobile-4);
+    }
+    .modal-body {
+        padding: var(--space-mobile-4);
+    }
+    .preview-container {
+        width: 100%;
+        height: 60vh;
+    }
+    /* Forms Mobile */
+    .form-input {
+        padding: var(--space-mobile-4);
+        font-size: var(--font-size-base-mobile);
+        min-height: 44px;
+    }
+    .form-label {
+        font-size: var(--font-size-sm-mobile);
+        margin-bottom: var(--space-mobile-2);
+    }
+    .form-group {
+        margin-bottom: var(--space-mobile-5);
+    }
+    .password-toggle {
+        right: var(--space-mobile-3);
+        padding: var(--space-mobile-2);
+    }
+    /* Breadcrumb Mobile */
+    .breadcrumb {
+        font-size: var(--font-size-xs-mobile);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+        padding-bottom: var(--space-mobile-2);
+    }
+    .breadcrumb-item {
+        display: inline-flex;
+    }
+    /* Filter bar for mobile */
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-mobile-4);
+        padding: var(--space-mobile-4);
+    }
+    .filter-left {
+        flex-direction: column;
+        gap: var(--space-mobile-3);
+    }
+    .filter-select {
+        width: 100%;
+        min-width: unset;
+    }
+    .filter-right {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+
+/* TABLET STYLES (768px - 1023px) */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+        padding: 0 var(--space-6);
+    }
+    .books-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-5);
+    }
+    .hero-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .auth-container {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-10);
+    }
+    .book-detail-container {
+        grid-template-columns: 350px 1fr;
+        gap: var(--space-10);
+    }
+    .checkout-container {
+        grid-template-columns: 1fr 350px;
+        gap: var(--space-10);
+    }
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-8);
+    }
+    .nav-menu {
+        display: flex;
+    }
+    .mobile-toggle {
+        display: none;
+    }
+    /* Ensure auth actions are visible on tablet */
+    .auth-actions,
+    .user-menu {
+        display: flex;
+    }
+    .nav-menu .auth-actions-mobile,
+    .nav-menu .user-menu-mobile {
+        display: none;
+        /* Hide mobile-specific auth in tablet view */
+    }
+}
+
+
+/* DESKTOP STYLES (1024px+) */
+
+@media (min-width: 1024px) {
+    .books-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .hero-stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .footer-content {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .nav-menu {
+        display: flex !important;
+        /* Ensure menu is always visible on desktop */
+    }
+    .mobile-toggle {
+        display: none !important;
+        /* Hide toggle on desktop */
+    }
+    /* Ensure desktop auth actions are visible */
+    .auth-actions,
+    .user-menu {
+        display: flex !important;
+    }
+    .nav-menu .auth-actions-mobile,
+    .nav-menu .user-menu-mobile {
+        display: none !important;
+        /* Hide mobile-specific auth on desktop */
+    }
+}
+
+
+/* LARGE DESKTOP (1200px+) */
+
+@media (min-width: 1200px) {
+    .container {
+        padding: 0 var(--space-8);
+    }
+    .books-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: var(--space-8);
+    }
+}
+
+
+/* EXTRA LARGE DESKTOP (1440px+) */
+
+@media (min-width: 1440px) {
+    .books-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .hero-title {
+        font-size: var(--font-size-5xl);
+    }
+    .hero-description {
+        font-size: var(--font-size-2xl);
+    }
+}
+
+
+/* HIGH DPI DISPLAYS */
+
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+    .book-cover,
+    .user-avatar,
+    .brand-icon {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+
+/* LANDSCAPE ORIENTATION */
+
+@media (max-width: 767px) and (orientation: landscape) {
+    .auth-main {
+        padding: var(--space-mobile-6) 0;
+    }
+    .hero {
+        padding: var(--space-mobile-8) 0;
+    }
+    .modal-content {
+        max-height: 90vh;
+    }
+}
+
+
+/* PRINT STYLES */
+
+@media print {
+    .header,
+    .footer,
+    .nav-menu,
+    .nav-actions,
+    .floating-book,
+    .background-animation,
+    .modal,
+    .notification-container,
+    .loading-overlay {
+        display: none !important;
+    }
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+    .book-detail-container {
+        grid-template-columns: 1fr;
+    }
+    .book-purchase {
+        display: none;
+    }
+}
+
+
+/* ACCESSIBILITY IMPROVEMENTS */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .floating-book {
+        animation: none;
+    }
+}
+
+
+/* HIGH CONTRAST MODE */
+
+@media (prefers-contrast: high) {
+     :root {
+        --primary-500: #0066cc;
+        --primary-600: #0052a3;
+        --gray-900: #000000;
+        --gray-100: #ffffff;
+        --error: #cc0000;
+        --success: #008800;
+        --warning: #cc6600;
+    }
+    .btn {
+        border: 2px solid currentColor;
+    }
+    .form-input {
+        border: 2px solid var(--gray-900);
+    }
+}
+
+
+/* DARK MODE PREFERENCE */
+
+@media (prefers-color-scheme: dark) {
+     :root {
+        --white: #1a1a1a;
+        --gray-50: #262626;
+        --gray-100: #404040;
+        --gray-200: #525252;
+        --gray-900: #ffffff;
+        --gray-800: #f5f5f5;
+        --gray-700: #e5e5e5;
+        --gray-600: #d4d4d4;
+    }
+}

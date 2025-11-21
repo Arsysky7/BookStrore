@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Admin Panel</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .user-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-card .label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .users-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8fafc;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .role-badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .role-badge.admin {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .role-badge.customer {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-deactivate {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-activate {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .btn-action:hover {
+            opacity: 0.8;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-book-open"></i> Admin Panel</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a>
+                <a href="books.html"><i class="fas fa-book"></i> Books</a>
+                <a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a>
+                <a href="users.html" class="active"><i class="fas fa-users"></i> Users</a>
+                <a href="upload.html"><i class="fas fa-upload"></i> Upload</a>
+                <a href="../frontend/index.html"><i class="fas fa-home"></i> View Site</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>User Management</h1>
+                <p>Manage user accounts, roles, and access</p>
+            </div>
+
+            <!-- User Stats -->
+            <div class="user-stats-grid">
+                <div class="stat-card">
+                    <div class="icon" style="color: #4f46e5;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="value" id="totalUsers">0</div>
+                    <div class="label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon" style="color: #10b981;">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="value" id="activeUsers">0</div>
+                    <div class="label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon" style="color: #f59e0b;">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="value" id="adminUsers">0</div>
+                    <div class="label">Admin Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon" style="color: #06b6d4;">
+                        <i class="fas fa-envelope-circle-check"></i>
+                    </div>
+                    <div class="value" id="verifiedUsers">0</div>
+                    <div class="label">Verified Emails</div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Search Users</label>
+                    <input type="text" id="searchInput" placeholder="Search by name or email...">
+                </div>
+                <div class="filter-group">
+                    <label>Role Filter</label>
+                    <select id="roleFilter">
+                        <option value="">All Roles</option>
+                        <option value="admin">Admin</option>
+                        <option value="customer">Customer</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status Filter</label>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="display: flex; align-items: flex-end;">
+                    <button onclick="applyFilters()" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="users-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Email Verified</th>
+                            <th>Registered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: #94a3b8;"></i>
+                                <p style="color: #94a3b8; margin-top: 10px;">Loading users...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </main>
+    </div>
+
+    <script src="js/admin-api.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script>
+        let adminAPI;
+        let currentPage = 1;
+        const perPage = 20;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check admin auth
+            if (!isAdminAuthenticated()) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            adminAPI = new AdminAPI();
+
+            // Load initial data
+            await loadUserStats();
+            await loadUsers();
+
+            // Setup filter listeners
+            setupFilterListeners();
+        });
+
+        async function loadUserStats() {
+            try {
+                const response = await adminAPI.getAdminUserStats();
+
+                if (response.success && response.data) {
+                    const stats = response.data;
+                    document.getElementById('totalUsers').textContent = stats.total_users || 0;
+                    document.getElementById('activeUsers').textContent = stats.active_users || 0;
+                    document.getElementById('adminUsers').textContent = stats.admin_users || 0;
+                    document.getElementById('verifiedUsers').textContent = stats.verified_emails || 0;
+                }
+            } catch (error) {
+                console.error('Failed to load user stats:', error);
+                showNotification('Failed to load user statistics', 'error');
+            }
+        }
+
+        async function loadUsers(page = 1) {
+            try {
+                const searchTerm = document.getElementById('searchInput').value;
+                const roleFilter = document.getElementById('roleFilter').value;
+
+                const response = await adminAPI.getAdminUsers(page, perPage, searchTerm, roleFilter);
+
+                if (response.success && response.data) {
+                    displayUsers(response.data);
+                    if (response.pagination) {
+                        displayPagination(response.pagination);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                document.getElementById('usersTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #ef4444;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 32px;"></i>
+                            <p style="margin-top: 10px;">Failed to load users. Please try again.</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+
+            if (!users || users.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #94a3b8;">
+                            <i class="fas fa-users" style="font-size: 32px;"></i>
+                            <p style="margin-top: 10px;">No users found</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>
+                        <strong>${user.full_name || user.email.split('@')[0]}</strong>
+                    </td>
+                    <td>${user.email}</td>
+                    <td>
+                        <span class="role-badge ${user.role}">${user.role}</span>
+                    </td>
+                    <td>
+                        <span class="status-badge ${user.is_active ? 'active' : 'inactive'}">
+                            ${user.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        ${user.email_verified ?
+                            '<i class="fas fa-check-circle" style="color: #10b981;"></i> Yes' :
+                            '<i class="fas fa-times-circle" style="color: #ef4444;"></i> No'}
+                    </td>
+                    <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <div class="action-btns">
+                            ${user.is_active ?
+                                `<button class="btn-action btn-deactivate" onclick="toggleUserStatus('${user.id}', false)">
+                                    <i class="fas fa-ban"></i> Deactivate
+                                </button>` :
+                                `<button class="btn-action btn-activate" onclick="toggleUserStatus('${user.id}', true)">
+                                    <i class="fas fa-check"></i> Activate
+                                </button>`
+                            }
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function displayPagination(pagination) {
+            const container = document.getElementById('pagination');
+            const totalPages = pagination.total_pages || 1;
+            const currentPage = pagination.current_page || 1;
+
+            let html = '';
+
+            // Previous button
+            html += `<button onclick="loadUsers(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>`;
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    html += `<button onclick="loadUsers(${i})" class="${i === currentPage ? 'active' : ''}">
+                        ${i}
+                    </button>`;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    html += '<span>...</span>';
+                }
+            }
+
+            // Next button
+            html += `<button onclick="loadUsers(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                Next <i class="fas fa-chevron-right"></i>
+            </button>`;
+
+            container.innerHTML = html;
+        }
+
+        async function toggleUserStatus(userId, isActive) {
+            if (!confirm(`Are you sure you want to ${isActive ? 'activate' : 'deactivate'} this user?`)) {
+                return;
+            }
+
+            try {
+                const response = await adminAPI.updateUserStatus(userId, isActive);
+
+                if (response.success) {
+                    showNotification(`User ${isActive ? 'activated' : 'deactivated'} successfully`, 'success');
+                    await loadUsers(currentPage);
+                    await loadUserStats();
+                } else {
+                    throw new Error(response.message || 'Update failed');
+                }
+            } catch (error) {
+                console.error('Failed to update user status:', error);
+                showNotification(error.message || 'Failed to update user status', 'error');
+            }
+        }
+
+        function setupFilterListeners() {
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    loadUsers(1);
+                }, 500);
+            });
+        }
+
+        function applyFilters() {
+            loadUsers(1);
+        }
+
+        function showNotification(message, type = 'info') {
+            // Simple notification (could be enhanced with a toast library)
+            alert(message);
+        }
+
+        function logout() {
+            localStorage.removeItem('auth_token');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1007 @@
+<!-- /pdf-bookstore/frontend/book.html -->
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Detail Buku - PDF Bookstore</title>
+    <meta name="description" id="page-description" content="Detail buku digital, preview, dan pembelian instant di PDF Bookstore.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/improvements.css">
+    <link rel="stylesheet" href="css/modern-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <!-- Brand Logo -->
+                <div class="brand">
+                    <a href="index.html" class="brand-link">
+                        <div class="brand-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="brand-text">PDF Bookstore</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="nav-menu" id="nav-menu">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="library.html" class="nav-link" data-auth>
+                        <i class="fas fa-books"></i>
+                        <span>My Library</span>
+                    </a>
+                    <a href="#categories" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Categories</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Actions -->
+                <div class="nav-actions">
+                    <!-- Search Button -->
+                    <button class="action-btn search-btn" id="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+
+                    <!-- Cart Button -->
+                    <button class="action-btn cart-btn" id="cart-btn" data-auth>
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cart-count">0</span>
+                    </button>
+
+                    <!-- Guest Actions -->
+                    <div class="guest-actions" id="guest-actions">
+                        <a href="login.html" class="btn btn-outline">Login</a>
+                        <a href="register.html" class="btn btn-primary">Daftar</a>
+                    </div>
+
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown-container" id="user-dropdown" data-auth>
+                        <button class="user-btn" id="user-btn">
+                            <img src="https://via.placeholder.com/32x32" alt="Profile" class="user-avatar" id="user-avatar">
+                            <span class="user-name" id="user-name">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="library.html" class="dropdown-item">
+                                <i class="fas fa-books"></i>
+                                <span>My Library</span>
+                            </a>
+                            <a href="#profile" class="dropdown-item">
+                                <i class="fas fa-user-edit"></i>
+                                <span>Profile</span>
+                            </a>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb-section">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="index.html" class="breadcrumb-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <span class="breadcrumb-separator">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+                <span class="breadcrumb-item active" id="breadcrumb-category">Books</span>
+                <span class="breadcrumb-separator">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+                <span class="breadcrumb-item active" id="breadcrumb-title">Book Title</span>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="book-detail-main">
+        <div class="container">
+            <!-- Book Detail Section -->
+            <section class="book-detail-section">
+                <div class="book-detail-container">
+                    <!-- Book Cover & Gallery -->
+                    <div class="book-media">
+                        <div class="book-cover-container">
+                            <img id="book-cover" src="https://via.placeholder.com/400x600?text=Loading..." alt="Book Cover" class="book-cover">
+                            <div class="book-badges" id="book-badges">
+                                <!-- Dynamic badges will be inserted here -->
+                            </div>
+                        </div>
+
+                        <!-- Book Preview Button -->
+                        <div class="book-preview">
+                            <button class="btn btn-outline btn-block preview-btn" id="preview-btn">
+                                <i class="fas fa-eye"></i>
+                                <span>Preview Buku</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Book Information -->
+                    <div class="book-info">
+                        <div class="book-header">
+                            <h1 class="book-title" id="book-title">Loading...</h1>
+                            <p class="book-author" id="book-author">Loading...</p>
+
+                            <div class="book-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-tag"></i>
+                                    <span id="book-category">Category</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span id="book-publish-date">2024</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <span id="book-pages">0 halaman</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-language"></i>
+                                    <span id="book-language">Bahasa Indonesia</span>
+                                </div>
+                            </div>
+
+                            <!-- Book Rating -->
+                            <div class="book-rating">
+                                <div class="rating-stars" id="book-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="rating-text">4.5 (128 reviews)</span>
+                            </div>
+                        </div>
+
+                        <!-- Book Price & Actions -->
+                        <div class="book-purchase">
+                            <div class="price-container">
+                                <div class="price-current" id="book-price">Rp 0</div>
+                                <div class="price-original" id="book-original-price" style="display: none;">Rp 0</div>
+                                <div class="price-discount" id="book-discount" style="display: none;">0% OFF</div>
+                            </div>
+
+                            <div class="purchase-actions">
+                                <!-- Guest Actions -->
+                                <div class="guest-purchase" id="guest-purchase">
+                                    <p class="purchase-note">
+                                        <i class="fas fa-info-circle"></i> Login untuk membeli dan mengakses buku
+                                    </p>
+                                    <a href="login.html" class="btn btn-primary btn-large btn-block">
+                                        <i class="fas fa-sign-in-alt"></i> Login untuk Beli
+                                    </a>
+                                </div>
+
+                                <!-- User Actions -->
+                                <div class="user-purchase" id="user-purchase" style="display: none;">
+                                    <!-- If user owns the book -->
+                                    <div class="owned-actions" id="owned-actions" style="display: none;">
+                                        <div class="owned-status">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Kamu sudah memiliki buku ini</span>
+                                        </div>
+                                        <button class="btn btn-success btn-large btn-block download-btn" id="download-btn">
+                                            <i class="fas fa-download"></i>
+                                            Download PDF
+                                        </button>
+                                        <a href="#" class="btn btn-outline btn-large btn-block read-online-btn" id="read-online-btn">
+                                            <i class="fas fa-book-reader"></i> Baca Online
+                                        </a>
+                                    </div>
+
+                                    <!-- If user doesn't own the book -->
+                                    <div class="purchase-options" id="purchase-options">
+                                        <button class="btn btn-primary btn-large btn-block buy-now-btn" id="buy-now-btn">
+                                            <i class="fas fa-bolt"></i>
+                                            Beli Sekarang
+                                        </button>
+                                        <button class="btn btn-outline btn-large btn-block add-cart-btn" id="add-cart-btn">
+                                            <i class="fas fa-cart-plus"></i>
+                                            Tambah ke Keranjang
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Purchase Benefits -->
+                            <div class="purchase-benefits">
+                                <h4>Yang kamu dapatkan:</h4>
+                                <div class="benefit-list">
+                                    <div class="benefit-item">
+                                        <i class="fas fa-download"></i>
+                                        <span>Download PDF selamanya</span>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>Akses di semua device</span>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i class="fas fa-book-reader"></i>
+                                        <span>Baca online tanpa batas</span>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span>Garansi uang kembali</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Book Description -->
+            <section class="book-description-section">
+                <div class="section-tabs">
+                    <button class="tab-btn active" data-tab="description">Deskripsi</button>
+                    <button class="tab-btn" data-tab="details">Detail Buku</button>
+                    <button class="tab-btn" data-tab="reviews">Reviews (128)</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Description Tab -->
+                    <div class="tab-panel active" id="description-panel">
+                        <div class="book-description" id="book-description">
+                            <p>Loading book description...</p>
+                        </div>
+                    </div>
+
+                    <!-- Details Tab -->
+                    <div class="tab-panel" id="details-panel">
+                        <div class="book-details">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">ISBN:</span>
+                                    <span class="detail-value" id="book-isbn">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Penerbit:</span>
+                                    <span class="detail-value" id="book-publisher">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Tahun Terbit:</span>
+                                    <span class="detail-value" id="book-year">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Ukuran File:</span>
+                                    <span class="detail-value" id="book-filesize">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Format:</span>
+                                    <span class="detail-value">PDF</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">DRM Protection:</span>
+                                    <span class="detail-value">None</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div class="tab-panel" id="reviews-panel">
+                        <div class="reviews-section">
+                            <div class="reviews-summary">
+                                <div class="rating-overview">
+                                    <div class="rating-score">4.5</div>
+                                    <div class="rating-stars-large">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <div class="rating-count">Berdasarkan 128 review</div>
+                                </div>
+                                <div class="rating-breakdown">
+                                    <div class="rating-bar">
+                                        <span>5★</span>
+                                        <div class="bar">
+                                            <div class="fill" style="width: 70%"></div>
+                                        </div>
+                                        <span>70%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>4★</span>
+                                        <div class="bar">
+                                            <div class="fill" style="width: 20%"></div>
+                                        </div>
+                                        <span>20%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>3★</span>
+                                        <div class="bar">
+                                            <div class="fill" style="width: 7%"></div>
+                                        </div>
+                                        <span>7%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>2★</span>
+                                        <div class="bar">
+                                            <div class="fill" style="width: 2%"></div>
+                                        </div>
+                                        <span>2%</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>1★</span>
+                                        <div class="bar">
+                                            <div class="fill" style="width: 1%"></div>
+                                        </div>
+                                        <span>1%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="reviews-list" id="reviews-list">
+                                <!-- Dynamic reviews will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Related Books -->
+            <section class="related-books-section">
+                <div class="section-header">
+                    <h2>Buku Serupa</h2>
+                    <p>Rekomendasi buku lain yang mungkin kamu suka</p>
+                </div>
+                <div class="books-grid" id="related-books">
+                    <!-- Dynamic related books will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <div class="brand">
+                            <div class="brand-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <span class="brand-text">PDF Bookstore</span>
+                        </div>
+                        <p class="footer-description">
+                            Platform terpercaya untuk membeli dan membaca buku digital berkualitas tinggi.
+                        </p>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#categories">Categories</a></li>
+                        <li><a href="library.html" data-auth>My Library</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-title">Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2025 PDF Bookstore. Built with ❤️ by Syahdinata Dwi Fachril</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Preview Modal -->
+    <div class="modal" id="preview-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Preview Buku</h3>
+                <button class="modal-close" id="preview-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-container" id="preview-container">
+                    <!-- PDF preview will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Function untuk initialize book detail page - implementasi CLEAN-ARSY standards
+        document.addEventListener('DOMContentLoaded', () => {
+            const bookDetailPage = new BookDetailPageHandler();
+            bookDetailPage.init();
+        });
+
+        class BookDetailPageHandler {
+            constructor() {
+                this.bookId = this.getBookIdFromUrl();
+                this.currentBook = null;
+                this.userOwnsBook = false;
+                this.api = new ApiClient(); // dari js/api.js
+                this.auth = new AuthManager(); // dari js/auth.js
+                this.cart = new CartManager(); // dari js/cart.js
+                this.payment = new PaymentManager(); // dari js/payment.js
+            }
+
+            // Function untuk initialize page dan load book data
+            async init() {
+                if (!this.bookId) {
+                    Utils.showNotification('Book ID tidak ditemukan', 'error');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                    return;
+                }
+
+                this.setupEventListeners();
+                await this.loadBookDetail();
+                this.updateAuthUI();
+                console.log('Book detail page initialized successfully');
+            }
+
+            // Function untuk get book ID dari URL parameter
+            getBookIdFromUrl() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('id');
+            }
+
+            // Function untuk setup event listeners
+            setupEventListeners() {
+                // Tab switching
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+                });
+
+                // Purchase actions
+                const buyNowBtn = document.getElementById('buy-now-btn');
+                if (buyNowBtn) {
+                    buyNowBtn.addEventListener('click', () => this.handleBuyNow());
+                }
+
+                const addCartBtn = document.getElementById('add-cart-btn');
+                if (addCartBtn) {
+                    addCartBtn.addEventListener('click', () => this.handleAddToCart());
+                }
+
+                const downloadBtn = document.getElementById('download-btn');
+                if (downloadBtn) {
+                    downloadBtn.addEventListener('click', () => this.handleDownload());
+                }
+
+                const readOnlineBtn = document.getElementById('read-online-btn');
+                if (readOnlineBtn) {
+                    readOnlineBtn.addEventListener('click', () => this.handleReadOnline());
+                }
+
+                // Preview modal
+                const previewBtn = document.getElementById('preview-btn');
+                if (previewBtn) {
+                    previewBtn.addEventListener('click', () => this.showPreview());
+                }
+
+                const previewClose = document.getElementById('preview-close');
+                if (previewClose) {
+                    previewClose.addEventListener('click', () => this.closePreview());
+                }
+
+                // Auth actions
+                const logoutBtn = document.getElementById('logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', () => this.handleLogout());
+                }
+            }
+
+            // Function untuk load book detail dari API
+            async loadBookDetail() {
+                try {
+                    Utils.showLoading('Loading book details...');
+
+                    // Get book data dari API - dari js/api.js line 89
+                    const response = await this.api.books.getById(this.bookId);
+
+                    if (response.success && response.book) {
+                        this.currentBook = response.book;
+                        this.renderBookDetail();
+                        await this.checkUserOwnership();
+                        await this.loadRelatedBooks();
+                        await this.loadBookReviews();
+                    } else {
+                        throw new Error('Buku tidak ditemukan');
+                    }
+
+                } catch (error) {
+                    console.error('Error loading book detail:', error);
+                    Utils.showNotification('Gagal memuat detail buku', 'error');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                } finally {
+                    Utils.hideLoading();
+                }
+            }
+
+            // Function untuk render book detail ke UI
+            renderBookDetail() {
+                const book = this.currentBook;
+
+                // Update page title dan meta
+                document.title = `${book.title} - PDF Bookstore`;
+                document.getElementById('page-title').textContent = `${book.title} - PDF Bookstore`;
+                document.getElementById('page-description').content = book.description || 'Detail buku digital di PDF Bookstore';
+
+                // Update breadcrumb
+                document.getElementById('breadcrumb-category').textContent = book.category || 'Books';
+                document.getElementById('breadcrumb-title').textContent = book.title;
+
+                // Update book info
+                document.getElementById('book-cover').src = book.cover_url || 'https://via.placeholder.com/400x600?text=No+Cover';
+                document.getElementById('book-cover').alt = book.title;
+                document.getElementById('book-title').textContent = book.title;
+                document.getElementById('book-author').textContent = `oleh ${book.author}`;
+                document.getElementById('book-category').textContent = book.category || 'General';
+                document.getElementById('book-publish-date').textContent = new Date(book.published_at).getFullYear();
+                document.getElementById('book-pages').textContent = `${book.pages || 0} halaman`;
+                document.getElementById('book-language').textContent = book.language || 'Bahasa Indonesia';
+
+                // Update price
+                const price = parseFloat(book.price);
+                document.getElementById('book-price').textContent = Utils.formatCurrency(price);
+
+                // Show discount if available
+                if (book.original_price && book.original_price > price) {
+                    const originalPrice = parseFloat(book.original_price);
+                    const discount = Math.round(((originalPrice - price) / originalPrice) * 100);
+                    document.getElementById('book-original-price').textContent = Utils.formatCurrency(originalPrice);
+                    document.getElementById('book-discount').textContent = `${discount}% OFF`;
+                    document.getElementById('book-original-price').style.display = 'block';
+                    document.getElementById('book-discount').style.display = 'block';
+                }
+
+                // Update description
+                document.getElementById('book-description').innerHTML = book.description || '<p>Deskripsi tidak tersedia.</p>';
+
+                // Update book details
+                document.getElementById('book-isbn').textContent = book.isbn || '-';
+                document.getElementById('book-publisher').textContent = book.publisher || '-';
+                document.getElementById('book-year').textContent = new Date(book.published_at).getFullYear();
+                document.getElementById('book-filesize').textContent = Utils.formatFileSize(book.filesize || 0);
+
+                // Update badges
+                this.renderBookBadges(book);
+
+                // Update rating
+                this.renderBookRating(book);
+            }
+
+            // Function untuk render book badges
+            renderBookBadges(book) {
+                const badgesContainer = document.getElementById('book-badges');
+                let badges = [];
+
+                if (book.is_bestseller) badges.push('<span class="badge badge-bestseller">Bestseller</span>');
+                if (book.is_new) badges.push('<span class="badge badge-new">Baru</span>');
+                if (book.discount_percentage > 0) badges.push('<span class="badge badge-discount">Diskon</span>');
+
+                badgesContainer.innerHTML = badges.join('');
+            }
+
+            // Function untuk render book rating
+            renderBookRating(book) {
+                const rating = book.rating || 4.5;
+                const reviewCount = book.review_count || 0;
+
+                // Generate stars HTML
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating % 1 >= 0.5;
+                const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+                let starsHTML = '';
+                for (let i = 0; i < fullStars; i++) {
+                    starsHTML += '<i class="fas fa-star"></i>';
+                }
+                if (hasHalfStar) {
+                    starsHTML += '<i class="fas fa-star-half-alt"></i>';
+                }
+                for (let i = 0; i < emptyStars; i++) {
+                    starsHTML += '<i class="far fa-star"></i>';
+                }
+
+                document.getElementById('book-rating').innerHTML = starsHTML;
+                document.querySelector('.rating-text').textContent = `${rating} (${reviewCount} reviews)`;
+            }
+
+            // Function untuk check apakah user sudah memiliki buku ini
+            async checkUserOwnership() {
+                if (!this.auth.isAuthenticated()) return;
+
+                try {
+                    const response = await this.api.checkPurchaseStatus(this.bookId);
+
+                    this.userOwnsBook = response.has_purchased || false;
+
+                    this.updatePurchaseUI();
+                } catch (error) {
+                    console.error('Error checking ownership:', error);
+                    this.userOwnsBook = false;
+                    this.updatePurchaseUI();
+                }
+            }
+
+            // Function untuk update purchase UI berdasarkan auth status dan ownership
+            updatePurchaseUI() {
+                const guestPurchase = document.getElementById('guest-purchase');
+                const userPurchase = document.getElementById('user-purchase');
+                const ownedActions = document.getElementById('owned-actions');
+                const purchaseOptions = document.getElementById('purchase-options');
+
+                if (!this.auth.isAuthenticated()) {
+                    guestPurchase.style.display = 'block';
+                    userPurchase.style.display = 'none';
+                } else {
+                    guestPurchase.style.display = 'none';
+                    userPurchase.style.display = 'block';
+
+                    if (this.userOwnsBook) {
+                        ownedActions.style.display = 'block';
+                        purchaseOptions.style.display = 'none';
+
+                        // Update read online link
+                        const readOnlineBtn = document.getElementById('read-online-btn');
+                        readOnlineBtn.href = `reader.html?id=${this.bookId}`;
+                    } else {
+                        ownedActions.style.display = 'none';
+                        purchaseOptions.style.display = 'block';
+                    }
+                }
+            }
+
+            // Function untuk update auth UI elements
+            updateAuthUI() {
+                const isAuth = this.auth.isAuthenticated();
+                const user = this.auth.getCurrentUser();
+
+                // Show/hide auth elements
+                document.querySelectorAll('[data-auth]').forEach(el => {
+                    el.style.display = isAuth ? 'block' : 'none';
+                });
+                document.querySelectorAll('[data-guest]').forEach(el => {
+                    el.style.display = isAuth ? 'none' : 'block';
+                });
+
+                if (isAuth && user) {
+                    document.getElementById('user-name').textContent = user.name;
+                    // Update cart count
+                    this.updateCartCount();
+                }
+            }
+
+            // Function untuk handle buy now action
+            async handleBuyNow() {
+                if (!this.auth.isAuthenticated()) {
+                    Utils.showNotification('Silakan login terlebih dahulu', 'warning');
+                    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                    return;
+                }
+
+                try {
+                    Utils.showLoading('Processing purchase...');
+
+                    // Create order via API - dari js/api.js line 234
+                    const orderData = {
+                        book_id: this.bookId,
+                        quantity: 1,
+                        type: 'direct_purchase'
+                    };
+
+                    const response = await this.api.orders.create(orderData);
+
+                    if (response.success && response.payment_url) {
+                        // Redirect ke Midtrans payment - dari js/payment.js line 45
+                        await this.payment.redirectToPayment(response.payment_url, response.order_id);
+                    } else {
+                        throw new Error(response.message || 'Gagal membuat pesanan');
+                    }
+
+                } catch (error) {
+                    console.error('Purchase error:', error);
+                    Utils.showNotification(error.message || 'Gagal memproses pembelian', 'error');
+                } finally {
+                    Utils.hideLoading();
+                }
+            }
+
+            // Function untuk handle add to cart action
+            async handleAddToCart() {
+                if (!this.auth.isAuthenticated()) {
+                    Utils.showNotification('Silakan login terlebih dahulu', 'warning');
+                    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                    return;
+                }
+
+                try {
+                    // Add to cart via CartManager - dari js/cart.js line 67
+                    await this.cart.addItem(this.currentBook);
+                    Utils.showNotification('Buku berhasil ditambahkan ke keranjang', 'success');
+                    this.updateCartCount();
+                } catch (error) {
+                    console.error('Add to cart error:', error);
+                    Utils.showNotification('Gagal menambahkan ke keranjang', 'error');
+                }
+            }
+
+            // Function untuk handle download action
+            async handleDownload() {
+                try {
+                    Utils.showLoading('Preparing download...');
+
+                    // Download file via API - dari js/api.js line 178
+                    const blob = await this.api.books.download(this.bookId);
+
+                    // Create download link
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${this.currentBook.title}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+
+                    Utils.showNotification('Download berhasil!', 'success');
+
+                } catch (error) {
+                    console.error('Download error:', error);
+                    Utils.showNotification('Gagal mendownload buku', 'error');
+                } finally {
+                    Utils.hideLoading();
+                }
+            }
+
+            // Function untuk handle read online action
+            handleReadOnline() {
+                if (this.userOwnsBook) {
+                    window.location.href = `reader.html?id=${this.bookId}`;
+                } else {
+                    Utils.showNotification('Anda belum memiliki buku ini', 'warning');
+                }
+            }
+
+            // Function untuk show preview modal
+            async showPreview() {
+                try {
+                    const modal = document.getElementById('preview-modal');
+                    const container = document.getElementById('preview-container');
+
+                    modal.style.display = 'flex';
+                    container.innerHTML = '<div class="loading">Loading preview...</div>';
+
+                    // Load preview via API - dari js/api.js line 198
+                    const previewUrl = await this.api.books.getPreview(this.bookId);
+
+                    if (previewUrl) {
+                        container.innerHTML = `<iframe src="${previewUrl}" width="100%" height="600px"></iframe>`;
+                    } else {
+                        container.innerHTML = '<div class="no-preview">Preview tidak tersedia untuk buku ini.</div>';
+                    }
+
+                } catch (error) {
+                    console.error('Preview error:', error);
+                    document.getElementById('preview-container').innerHTML = '<div class="error">Gagal memuat preview.</div>';
+                }
+            }
+
+            // Function untuk close preview modal
+            closePreview() {
+                const modal = document.getElementById('preview-modal');
+                modal.style.display = 'none';
+                document.getElementById('preview-container').innerHTML = '';
+            }
+
+            // Function untuk switch tabs
+            switchTab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+                // Update tab panels
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.getElementById(`${tabName}-panel`).classList.add('active');
+            }
+
+            // Function untuk load related books
+            async loadRelatedBooks() {
+                try {
+                    // Get related books via API - dari js/api.js line 123
+                    const response = await this.api.books.getRelated(this.bookId);
+
+                    if (response.success && response.books) {
+                        this.renderRelatedBooks(response.books);
+                    }
+                } catch (error) {
+                    console.error('Error loading related books:', error);
+                }
+            }
+
+            // Function untuk render related books
+            renderRelatedBooks(books) {
+                const container = document.getElementById('related-books');
+
+                if (!books || books.length === 0) {
+                    container.innerHTML = '<p class="no-books">Tidak ada buku serupa yang ditemukan.</p>';
+                    return;
+                }
+
+                const booksHTML = books.map(book => `
+                    <div class="book-card">
+                        <a href="book.html?id=${book.id}" class="book-link">
+                            <div class="book-cover">
+                                <img src="${book.cover_url || 'https://via.placeholder.com/200x300'}" alt="${book.title}">
+                            </div>
+                            <div class="book-info">
+                                <h3 class="book-title">${book.title}</h3>
+                                <p class="book-author">${book.author}</p>
+                                <div class="book-price">${Utils.formatCurrency(parseFloat(book.price))}</div>
+                            </div>
+                        </a>
+                    </div>
+                `).join('');
+
+                container.innerHTML = booksHTML;
+            }
+
+            // Function untuk load book reviews
+            async loadBookReviews() {
+                try {
+                    // Get reviews via API - dari js/api.js line 145
+                    const response = await this.api.books.getReviews(this.bookId);
+
+                    if (response.success && response.reviews) {
+                        this.renderReviews(response.reviews);
+                    }
+                } catch (error) {
+                    console.error('Error loading reviews:', error);
+                }
+            }
+
+            // Function untuk render reviews
+            renderReviews(reviews) {
+                const container = document.getElementById('reviews-list');
+
+                if (!reviews || reviews.length === 0) {
+                    container.innerHTML = '<p class="no-reviews">Belum ada review untuk buku ini.</p>';
+                    return;
+                }
+
+                const reviewsHTML = reviews.map(review => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <img src="${review.user_avatar || 'https://via.placeholder.com/40x40'}" alt="${review.user_name}" class="reviewer-avatar">
+                                <div class="reviewer-details">
+                                    <h4 class="reviewer-name">${review.user_name}</h4>
+                                    <div class="review-date">${Utils.formatDate(review.created_at)}</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                ${this.generateStars(review.rating)}
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>${review.comment}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = reviewsHTML;
+            }
+
+            // Function untuk generate stars HTML
+            generateStars(rating) {
+                let starsHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= rating) {
+                        starsHTML += '<i class="fas fa-star"></i>';
+                    } else {
+                        starsHTML += '<i class="far fa-star"></i>';
+                    }
+                }
+                return starsHTML;
+            }
+
+            // Function untuk update cart count
+            updateCartCount() {
+                const cartCount = this.cart.getItemCount();
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCount;
+                    cartCountElement.style.display = cartCount > 0 ? 'block' : 'none';
+                }
+            }
+
+            // Function untuk handle logout
+            handleLogout() {
+                this.auth.logout();
+                Utils.showNotification('Berhasil logout', 'success');
+                setTimeout(() => window.location.reload(), 1000);
+            }
+        }
+    </script>
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+
+    <script src="js/mobile-nav.js"></script>
+</body>
+
+</html>

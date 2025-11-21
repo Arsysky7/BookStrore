@@ -1,0 +1,1277 @@
+<!-- /pdf-bookstore/frontend/reader.html -->
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="reader-title">PDF Reader - PDF Bookstore</title>
+    <meta name="description" content="Baca buku digital online dengan PDF reader yang nyaman dan responsif.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/improvements.css">
+    <link rel="stylesheet" href="css/modern-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+
+<body class="reader-page">
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Loading PDF...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Reader Header -->
+    <header class="reader-header" id="reader-header">
+        <div class="reader-header-content">
+            <!-- Left Controls -->
+            <div class="reader-left-controls">
+                <button class="reader-btn back-btn" id="back-btn" title="Kembali">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="book-info">
+                    <h1 class="book-title" id="book-title">Loading...</h1>
+                    <p class="book-author" id="book-author">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Center Controls -->
+            <div class="reader-center-controls">
+                <button class="reader-btn" id="prev-page-btn" title="Halaman Sebelumnya">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="page-info">
+                    <input type="number" id="current-page" class="page-input" value="1" min="1">
+                    <span class="page-separator">/</span>
+                    <span id="total-pages" class="total-pages">0</span>
+                </div>
+                <button class="reader-btn" id="next-page-btn" title="Halaman Selanjutnya">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="reader-right-controls">
+                <button class="reader-btn" id="zoom-out-btn" title="Zoom Out">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <span class="zoom-level" id="zoom-level">100%</span>
+                <button class="reader-btn" id="zoom-in-btn" title="Zoom In">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="reader-btn" id="fit-width-btn" title="Sesuaikan Lebar">
+                    <i class="fas fa-arrows-alt-h"></i>
+                </button>
+                <button class="reader-btn" id="fullscreen-btn" title="Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button class="reader-btn" id="settings-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Controls Toggle -->
+            <button class="mobile-controls-toggle" id="mobile-controls-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Reader Sidebar -->
+    <aside class="reader-sidebar" id="reader-sidebar">
+        <div class="sidebar-tabs">
+            <button class="sidebar-tab active" data-tab="toc">
+                <i class="fas fa-list"></i>
+                <span>Daftar Isi</span>
+            </button>
+            <button class="sidebar-tab" data-tab="bookmarks">
+                <i class="fas fa-bookmark"></i>
+                <span>Bookmark</span>
+            </button>
+            <button class="sidebar-tab" data-tab="notes">
+                <i class="fas fa-sticky-note"></i>
+                <span>Catatan</span>
+            </button>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="sidebar-content active" id="toc-content">
+            <div class="sidebar-header">
+                <h3>Daftar Isi</h3>
+            </div>
+            <div class="toc-list" id="toc-list">
+                <div class="toc-empty">
+                    <p>Tidak ada daftar isi</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookmarks -->
+        <div class="sidebar-content" id="bookmarks-content">
+            <div class="sidebar-header">
+                <h3>Bookmark</h3>
+                <button class="add-bookmark-btn" id="add-bookmark-btn" title="Tambah Bookmark">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="bookmarks-list" id="bookmarks-list">
+                <div class="bookmarks-empty">
+                    <p>Belum ada bookmark</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="sidebar-content" id="notes-content">
+            <div class="sidebar-header">
+                <h3>Catatan</h3>
+            </div>
+            <div class="notes-list" id="notes-list">
+                <div class="notes-empty">
+                    <p>Belum ada catatan</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Reader Content -->
+    <main class="reader-main" id="reader-main">
+        <div class="reader-container">
+            <!-- PDF Canvas -->
+            <div class="pdf-viewer" id="pdf-viewer">
+                <canvas id="pdf-canvas" class="pdf-canvas"></canvas>
+                <div class="pdf-loading" id="pdf-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading PDF page...</p>
+                </div>
+            </div>
+
+            <!-- Page Navigation -->
+            <div class="page-navigation" id="page-navigation">
+                <button class="nav-btn prev-btn" id="nav-prev-btn">
+                    <i class="fas fa-chevron-left"></i>
+                    <span>Previous</span>
+                </button>
+                <button class="nav-btn next-btn" id="nav-next-btn">
+                    <span>Next</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reader Settings</h3>
+                <button class="modal-close" id="settings-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>Tampilan</h4>
+                    <div class="setting-item">
+                        <label for="theme-select">Theme:</label>
+                        <select id="theme-select" class="setting-select">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="sepia">Sepia</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="font-size-slider">Font Size:</label>
+                        <input type="range" id="font-size-slider" class="setting-slider" min="12" max="24" value="16">
+                        <span id="font-size-value">16px</span>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4>Reading</h4>
+                    <div class="setting-item">
+                        <label class="setting-checkbox">
+                            <input type="checkbox" id="auto-scroll">
+                            <span class="checkmark"></span>
+                            Auto Scroll
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-checkbox">
+                            <input type="checkbox" id="reading-progress" checked>
+                            <span class="checkmark"></span>
+                            Simpan Progress Baca
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookmark Modal -->
+    <div class="modal" id="bookmark-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tambah Bookmark</h3>
+                <button class="modal-close" id="bookmark-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="bookmark-form">
+                    <div class="form-group">
+                        <label for="bookmark-title">Judul Bookmark:</label>
+                        <input type="text" id="bookmark-title" class="form-input" placeholder="Masukkan judul bookmark">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookmark-note">Catatan (opsional):</label>
+                        <textarea id="bookmark-note" class="form-textarea" placeholder="Tambahkan catatan..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="bookmark-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Simpan Bookmark</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const readerPage = new PDFReaderHandler();
+            readerPage.init();
+        });
+
+        class PDFReaderHandler {
+            constructor() {
+                this.bookId = this.getBookIdFromUrl();
+                this.currentBook = null;
+                this.pdfDoc = null;
+                this.currentPage = 1;
+                this.totalPages = 0;
+                this.scale = 1.0;
+                this.canvas = document.getElementById('pdf-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.api = new ApiClient();
+                this.auth = new AuthManager();
+                this.bookmarks = [];
+                this.notes = [];
+                this.readingProgress = 0;
+            }
+
+            async init() {
+                if (!this.bookId) {
+                    Utils.showNotification('Book ID tidak ditemukan', 'error');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                    return;
+                }
+
+                if (!this.auth.isAuthenticated()) {
+                    Utils.showNotification('Silakan login terlebih dahulu', 'warning');
+                    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                    return;
+                }
+
+                this.setupEventListeners();
+                await this.loadBookData();
+                await this.initializePDFViewer();
+                console.log('PDF Reader initialized successfully');
+            }
+
+            getBookIdFromUrl() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('id');
+            }
+
+            setupEventListeners() {
+                // Header controls
+                document.getElementById('back-btn').addEventListener('click', () => this.goBack());
+                document.getElementById('prev-page-btn').addEventListener('click', () => this.prevPage());
+                document.getElementById('next-page-btn').addEventListener('click', () => this.nextPage());
+                document.getElementById('current-page').addEventListener('change', (e) => this.goToPage(parseInt(e.target.value)));
+
+                // Zoom controls
+                document.getElementById('zoom-in-btn').addEventListener('click', () => this.zoomIn());
+                document.getElementById('zoom-out-btn').addEventListener('click', () => this.zoomOut());
+                document.getElementById('fit-width-btn').addEventListener('click', () => this.fitToWidth());
+
+                // Other controls
+                document.getElementById('fullscreen-btn').addEventListener('click', () => this.toggleFullscreen());
+                document.getElementById('settings-btn').addEventListener('click', () => this.showSettings());
+
+                // Mobile controls
+                document.getElementById('mobile-controls-toggle').addEventListener('click', () => this.toggleMobileControls());
+
+                // Sidebar tabs
+                document.querySelectorAll('.sidebar-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => this.switchSidebarTab(e.target.dataset.tab));
+                });
+
+                // Bookmarks
+                document.getElementById('add-bookmark-btn').addEventListener('click', () => this.showBookmarkModal());
+                document.getElementById('bookmark-form').addEventListener('submit', (e) => this.saveBookmark(e));
+                document.getElementById('bookmark-cancel').addEventListener('click', () => this.hideBookmarkModal());
+                document.getElementById('bookmark-close').addEventListener('click', () => this.hideBookmarkModal());
+
+                // Settings
+                document.getElementById('settings-close').addEventListener('click', () => this.hideSettings());
+                document.getElementById('theme-select').addEventListener('change', (e) => this.changeTheme(e.target.value));
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+
+                // Page navigation
+                document.getElementById('nav-prev-btn').addEventListener('click', () => this.prevPage());
+                document.getElementById('nav-next-btn').addEventListener('click', () => this.nextPage());
+            }
+
+            async loadBookData() {
+                try {
+                    Utils.showLoading('Loading book data...');
+
+                    const response = await this.api.books.getById(this.bookId);
+
+                    if (response.success && response.book) {
+                        this.currentBook = response.book;
+                        this.updateBookInfo();
+                        await this.checkBookOwnership();
+                    } else {
+                        throw new Error('Buku tidak ditemukan');
+                    }
+
+                } catch (error) {
+                    console.error('Error loading book data:', error);
+                    Utils.showNotification('Gagal memuat data buku', 'error');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                } finally {
+                    Utils.hideLoading();
+                }
+            }
+
+            updateBookInfo() {
+                const book = this.currentBook;
+                document.getElementById('reader-title').textContent = `${book.title} - PDF Reader`;
+                document.getElementById('book-title').textContent = book.title;
+                document.getElementById('book-author').textContent = `oleh ${book.author}`;
+            }
+
+            async checkBookOwnership() {
+                try {
+                    const response = await this.api.books.checkOwnership(this.bookId);
+                    if (!response.owns) {
+                        Utils.showNotification('Anda belum memiliki buku ini', 'error');
+                        setTimeout(() => window.location.href = `book.html?id=${this.bookId}`, 2000);
+                        return false;
+                    }
+                    return true;
+                } catch (error) {
+                    console.error('Error checking ownership:', error);
+                    return false;
+                }
+            }
+
+            async initializePDFViewer() {
+                try {
+                    Utils.showLoading('Loading PDF...');
+
+                    const pdfUrl = await this.api.books.getPDFUrl(this.bookId);
+
+                    pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+                        this.pdfDoc = pdf;
+                        this.totalPages = pdf.numPages;
+                        document.getElementById('total-pages').textContent = this.totalPages;
+                        document.getElementById('current-page').max = this.totalPages;
+
+                        this.loadReadingProgress();
+                        this.renderPage(this.currentPage);
+                        Utils.hideLoading();
+                    }).catch(error => {
+                        console.error('Error loading PDF:', error);
+                        Utils.showNotification('Gagal memuat PDF', 'error');
+                        Utils.hideLoading();
+                    });
+
+                } catch (error) {
+                    console.error('Error initializing PDF viewer:', error);
+                    Utils.showNotification('Gagal inisialisasi PDF viewer', 'error');
+                    Utils.hideLoading();
+                }
+            }
+
+            async renderPage(pageNum) {
+                if (!this.pdfDoc) return;
+
+                document.getElementById('pdf-loading').style.display = 'block';
+
+                try {
+                    const page = await this.pdfDoc.getPage(pageNum);
+                    const viewport = page.getViewport({
+                        scale: this.scale
+                    });
+
+                    this.canvas.height = viewport.height;
+                    this.canvas.width = viewport.width;
+
+                    const renderContext = {
+                        canvasContext: this.ctx,
+                        viewport: viewport
+                    };
+
+                    await page.render(renderContext).promise;
+
+                    this.currentPage = pageNum;
+                    document.getElementById('current-page').value = pageNum;
+                    this.updateNavigationButtons();
+                    this.saveReadingProgress();
+
+                } catch (error) {
+                    console.error('Error rendering page:', error);
+                    Utils.showNotification('Gagal memuat halaman', 'error');
+                } finally {
+                    document.getElementById('pdf-loading').style.display = 'none';
+                }
+            }
+
+            prevPage() {
+                if (this.currentPage > 1) {
+                    this.renderPage(this.currentPage - 1);
+                }
+            }
+
+            nextPage() {
+                if (this.currentPage < this.totalPages) {
+                    this.renderPage(this.currentPage + 1);
+                }
+            }
+
+            goToPage(pageNum) {
+                if (pageNum >= 1 && pageNum <= this.totalPages) {
+                    this.renderPage(pageNum);
+                }
+            }
+
+            zoomIn() {
+                this.scale = Math.min(this.scale + 0.25, 3.0);
+                this.updateZoomLevel();
+                this.renderPage(this.currentPage);
+            }
+
+            zoomOut() {
+                this.scale = Math.max(this.scale - 0.25, 0.5);
+                this.updateZoomLevel();
+                this.renderPage(this.currentPage);
+            }
+
+            fitToWidth() {
+                const container = document.getElementById('pdf-viewer');
+                const containerWidth = container.clientWidth - 40;
+                this.scale = containerWidth / this.canvas.width;
+                this.updateZoomLevel();
+                this.renderPage(this.currentPage);
+            }
+
+            updateZoomLevel() {
+                const percentage = Math.round(this.scale * 100);
+                document.getElementById('zoom-level').textContent = `${percentage}%`;
+            }
+
+            updateNavigationButtons() {
+                const prevBtn = document.getElementById('prev-page-btn');
+                const nextBtn = document.getElementById('next-page-btn');
+                const navPrevBtn = document.getElementById('nav-prev-btn');
+                const navNextBtn = document.getElementById('nav-next-btn');
+
+                const isFirstPage = this.currentPage === 1;
+                const isLastPage = this.currentPage === this.totalPages;
+
+                prevBtn.disabled = isFirstPage;
+                navPrevBtn.disabled = isFirstPage;
+                nextBtn.disabled = isLastPage;
+                navNextBtn.disabled = isLastPage;
+
+                prevBtn.classList.toggle('disabled', isFirstPage);
+                navPrevBtn.classList.toggle('disabled', isFirstPage);
+                nextBtn.classList.toggle('disabled', isLastPage);
+                navNextBtn.classList.toggle('disabled', isLastPage);
+            }
+
+            goBack() {
+                const referrer = document.referrer;
+                if (referrer && referrer.includes(window.location.origin)) {
+                    window.history.back();
+                } else {
+                    window.location.href = 'library.html';
+                }
+            }
+
+            toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    document.getElementById('fullscreen-btn').innerHTML = '<i class="fas fa-compress"></i>';
+                } else {
+                    document.exitFullscreen();
+                    document.getElementById('fullscreen-btn').innerHTML = '<i class="fas fa-expand"></i>';
+                }
+                window.addEventListener('scroll', function() {
+                    const header = document.querySelector('.header');
+                    if (window.scrollY > 20) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                });
+
+                // Mobile menu toggle
+                document.addEventListener('DOMContentLoaded', function() {
+                    const mobileToggle = document.getElementById('mobile-toggle');
+                    const navMenu = document.querySelector('.nav-menu');
+
+                    if (mobileToggle) {
+                        mobileToggle.addEventListener('click', function() {
+                            this.classList.toggle('active');
+                            navMenu.classList.toggle('active');
+                        });
+                    }
+                });
+            }
+
+            showSettings() {
+                document.getElementById('settings-modal').style.display = 'flex';
+            }
+
+            hideSettings() {
+                document.getElementById('settings-modal').style.display = 'none';
+            }
+
+            changeTheme(theme) {
+                document.body.className = `reader-page theme-${theme}`;
+                this.saveReaderSettings();
+            }
+
+            switchSidebarTab(tabName) {
+                document.querySelectorAll('.sidebar-tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.sidebar-content').forEach(content => content.classList.remove('active'));
+
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                document.getElementById(`${tabName}-content`).classList.add('active');
+            }
+
+            showBookmarkModal() {
+                document.getElementById('bookmark-title').value = `Halaman ${this.currentPage}`;
+                document.getElementById('bookmark-modal').style.display = 'flex';
+            }
+
+            hideBookmarkModal() {
+                document.getElementById('bookmark-modal').style.display = 'none';
+                document.getElementById('bookmark-form').reset();
+            }
+
+            saveBookmark(event) {
+                event.preventDefault();
+
+                const title = document.getElementById('bookmark-title').value;
+                const note = document.getElementById('bookmark-note').value;
+
+                const bookmark = {
+                    id: Date.now(),
+                    page: this.currentPage,
+                    title: title,
+                    note: note,
+                    timestamp: new Date().toISOString()
+                };
+
+                this.bookmarks.push(bookmark);
+                this.saveBookmarks();
+                this.renderBookmarks();
+                this.hideBookmarkModal();
+
+                Utils.showNotification('Bookmark berhasil disimpan', 'success');
+            }
+
+            renderBookmarks() {
+                    const container = document.getElementById('bookmarks-list');
+
+                    if (this.bookmarks.length === 0) {
+                        container.innerHTML = '<div class="bookmarks-empty"><p>Belum ada bookmark</p></div>';
+                        return;
+                    }
+
+                    const bookmarksHTML = this.bookmarks.map(bookmark => `
+                    <div class="bookmark-item" data-page="${bookmark.page}">
+                        <div class="bookmark-info">
+                            <h4 class="bookmark-title">${bookmark.title}</h4>
+                            <p class="bookmark-page">Halaman ${bookmark.page}</p>
+                            ${bookmark.note ? `<p class="bookmark-note">${bookmark.note}</p>` : ''}
+                        </div>
+                        <div class="bookmark-actions">
+                            <button class="bookmark-goto" onclick="readerPage.goToPage(${bookmark.page})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="bookmark-delete" onclick="readerPage.deleteBookmark(${bookmark.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = bookmarksHTML;
+            }
+
+            deleteBookmark(bookmarkId) {
+                this.bookmarks = this.bookmarks.filter(b => b.id !== bookmarkId);
+                this.saveBookmarks();
+                this.renderBookmarks();
+                Utils.showNotification('Bookmark dihapus', 'info');
+            }
+
+            handleKeyboardShortcuts(event) {
+                if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+                
+                switch (event.key) {
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        this.prevPage();
+                        break;
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        this.nextPage();
+                        break;
+                    case '+':
+                        event.preventDefault();
+                        this.zoomIn();
+                        break;
+                    case '-':
+                        event.preventDefault();
+                        this.zoomOut();
+                        break;
+                    case 'f':
+                        event.preventDefault();
+                        this.toggleFullscreen();
+                        break;
+                    case 'Escape':
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen();
+                        }
+                        break;
+                }
+            }
+
+            saveReadingProgress() {
+                this.readingProgress = (this.currentPage / this.totalPages) * 100;
+                const progressData = {
+                    bookId: this.bookId,
+                    currentPage: this.currentPage,
+                    progress: this.readingProgress,
+                    lastRead: new Date().toISOString()
+                };
+                
+                localStorage.setItem(`reading_progress_${this.bookId}`, JSON.stringify(progressData));
+            }
+
+            loadReadingProgress() {
+                const savedProgress = localStorage.getItem(`reading_progress_${this.bookId}`);
+                if (savedProgress) {
+                    const progressData = JSON.parse(savedProgress);
+                    this.currentPage = progressData.currentPage || 1;
+                    this.readingProgress = progressData.progress || 0;
+                }
+            }
+
+            saveBookmarks() {
+                localStorage.setItem(`bookmarks_${this.bookId}`, JSON.stringify(this.bookmarks));
+            }
+
+            loadBookmarks() {
+                const savedBookmarks = localStorage.getItem(`bookmarks_${this.bookId}`);
+                if (savedBookmarks) {
+                    this.bookmarks = JSON.parse(savedBookmarks);
+                    this.renderBookmarks();
+                }
+            }
+
+            saveReaderSettings() {
+                const settings = {
+                    theme: document.getElementById('theme-select').value,
+                    fontSize: document.getElementById('font-size-slider').value,
+                    autoScroll: document.getElementById('auto-scroll').checked,
+                    saveProgress: document.getElementById('reading-progress').checked
+                };
+                
+                localStorage.setItem('reader_settings', JSON.stringify(settings));
+            }
+
+            loadReaderSettings() {
+                const savedSettings = localStorage.getItem('reader_settings');
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    document.getElementById('theme-select').value = settings.theme || 'light';
+                    document.getElementById('font-size-slider').value = settings.fontSize || 16;
+                    document.getElementById('auto-scroll').checked = settings.autoScroll || false;
+                    document.getElementById('reading-progress').checked = settings.saveProgress !== false;
+                    
+                    this.changeTheme(settings.theme || 'light');
+                }
+            }
+
+            toggleMobileControls() {
+                const header = document.getElementById('reader-header');
+                header.classList.toggle('mobile-open');
+            }
+        }
+
+        // Global reference for bookmark actions
+        let readerPage;
+        document.addEventListener('DOMContentLoaded', () => {
+            readerPage = new PDFReaderHandler();
+            readerPage.init();
+        });
+    </script>
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .reader-page {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            background: var(--gray-100);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .reader-header {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-3) var(--space-4);
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .reader-header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: none;
+        }
+        
+        .reader-left-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            flex: 1;
+        }
+        
+        .reader-center-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .reader-right-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            flex: 1;
+            justify-content: flex-end;
+        }
+        
+        .reader-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--gray-200);
+            background: var(--white);
+            color: var(--gray-700);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+        }
+        
+        .reader-btn:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+        
+        .reader-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .back-btn {
+            background: var(--primary-50);
+            color: var(--primary-600);
+            border-color: var(--primary-200);
+        }
+        
+        .book-info {
+            max-width: 300px;
+        }
+        
+        .book-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0 0 var(--space-1) 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .book-author {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .page-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: var(--gray-50);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-lg);
+        }
+        
+        .page-input {
+            width: 60px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+        
+        .zoom-level {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--gray-700);
+            min-width: 45px;
+            text-align: center;
+        }
+        
+        .mobile-controls-toggle {
+            display: none;
+        }
+        /* Main Layout */
+        
+        .reader-main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .reader-sidebar {
+            width: 300px;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .sidebar-tab {
+            flex: 1;
+            padding: var(--space-3);
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-1);
+            color: var(--gray-600);
+            transition: var(--transition-fast);
+        }
+        
+        .sidebar-tab.active {
+            color: var(--primary-600);
+            background: var(--primary-50);
+        }
+        
+        .sidebar-tab span {
+            font-size: var(--font-size-xs);
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .sidebar-content.active {
+            display: flex;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+        }
+        
+        .add-bookmark-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--primary-200);
+            background: var(--primary-50);
+            color: var(--primary-600);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* PDF Viewer */
+        
+        .reader-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .pdf-viewer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            padding: var(--space-4);
+            position: relative;
+        }
+        
+        .pdf-canvas {
+            max-width: 100%;
+            height: auto;
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius-lg);
+        }
+        
+        .pdf-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--gray-600);
+            display: none;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--space-3);
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        /* Page Navigation */
+        
+        .page-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-4);
+            background: var(--white);
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-6);
+            border: 1px solid var(--gray-200);
+            background: var(--white);
+            color: var(--gray-700);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-weight: 500;
+        }
+        
+        .nav-btn:hover {
+            background: var(--gray-50);
+            border-color: var(--primary-300);
+            color: var(--primary-600);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        /* Bookmarks */
+        
+        .bookmarks-list,
+        .notes-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-2);
+        }
+        
+        .bookmark-item {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3);
+            margin-bottom: var(--space-2);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .bookmark-info {
+            flex: 1;
+        }
+        
+        .bookmark-title {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin: 0 0 var(--space-1) 0;
+        }
+        
+        .bookmark-page {
+            font-size: var(--font-size-xs);
+            color: var(--gray-600);
+            margin: 0 0 var(--space-1) 0;
+        }
+        
+        .bookmark-note {
+            font-size: var(--font-size-xs);
+            color: var(--gray-700);
+            margin: 0;
+        }
+        
+        .bookmark-actions {
+            display: flex;
+            gap: var(--space-1);
+        }
+        
+        .bookmark-goto,
+        .bookmark-delete {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xs);
+        }
+        
+        .bookmark-goto {
+            background: var(--primary-100);
+            color: var(--primary-600);
+        }
+        
+        .bookmark-delete {
+            background: var(--error);
+            color: var(--white);
+        }
+        /* Settings Modal */
+        
+        .settings-section {
+            margin-bottom: var(--space-6);
+        }
+        
+        .settings-section h4 {
+            margin: 0 0 var(--space-4) 0;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-3);
+        }
+        
+        .setting-select,
+        .setting-slider {
+            width: 120px;
+        }
+        
+        .setting-checkbox {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            cursor: pointer;
+        }
+        /* Theme Variations */
+        
+        .theme-dark {
+            --white: #1a1a1a;
+            --gray-50: #262626;
+            --gray-100: #404040;
+            --gray-200: #525252;
+            --gray-900: #ffffff;
+            --gray-800: #f5f5f5;
+            --gray-700: #e5e5e5;
+            --gray-600: #d4d4d4;
+        }
+        
+        .theme-sepia {
+            --white: #f4f1ea;
+            --gray-50: #f0ead6;
+            --gray-100: #ebe3c8;
+            --gray-200: #d9cfa3;
+            --gray-900: #2c1810;
+            --gray-800: #3d2317;
+            --gray-700: #4e2d1e;
+            --gray-600: #5f3725;
+        }
+        /* Mobile Responsive */
+        
+        @media (max-width: 768px) {
+            .reader-header-content {
+                position: relative;
+            }
+            .reader-left-controls,
+            .reader-center-controls,
+            .reader-right-controls {
+                display: none;
+            }
+            .reader-header.mobile-open .reader-left-controls,
+            .reader-header.mobile-open .reader-center-controls,
+            .reader-header.mobile-open .reader-right-controls {
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                border-top: 1px solid var(--gray-200);
+                padding: var(--space-4);
+                z-index: 10;
+                flex-wrap: wrap;
+                gap: var(--space-3);
+                box-shadow: var(--shadow-md);
+            }
+            .mobile-controls-toggle {
+                display: flex;
+            }
+            .reader-sidebar {
+                position: fixed;
+                left: -300px;
+                top: 0;
+                height: 100vh;
+                z-index: 100;
+                transition: left 0.3s ease;
+            }
+            .reader-sidebar.active {
+                left: 0;
+            }
+            .book-info {
+                max-width: 200px;
+            }
+            .book-title {
+                font-size: var(--font-size-base);
+            }
+            .book-author {
+                font-size: var(--font-size-xs);
+            }
+            .page-navigation {
+                padding: var(--space-3);
+            }
+            .nav-btn {
+                padding: var(--space-2) var(--space-4);
+                font-size: var(--font-size-sm);
+            }
+        }
+        /* Form Styles */
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: var(--space-3);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            resize: vertical;
+            font-family: var(--font-family);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: var(--space-3);
+            justify-content: flex-end;
+            margin-top: var(--space-6);
+        }
+        /* Empty States */
+        
+        .toc-empty,
+        .bookmarks-empty,
+        .notes-empty {
+            text-align: center;
+            padding: var(--space-8);
+            color: var(--gray-500);
+        }
+    </style>
+    <script src="js/mobile-nav.js"></script>
+</body>
+
+</html>

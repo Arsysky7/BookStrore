@@ -1,0 +1,482 @@
+<!-- /pdf-bookstore/frontend/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Bookstore - Digital Books for Everyone</title>
+    <meta name="description" content="Discover thousands of digital books. Read online or download PDF books instantly. Best prices, premium quality.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/improvements.css">
+    <link rel="stylesheet" href="css/modern-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-container" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <!-- Brand Logo -->
+                <div class="brand">
+                    <a href="index.html" class="brand-link">
+                        <div class="brand-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="brand-text">PDF Bookstore</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="nav-menu" id="nav-menu">
+                    <a href="index.html" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="library.html" class="nav-link" data-auth>
+                        <i class="fas fa-books"></i>
+                        <span>My Library</span>
+                    </a>
+                    <a href="#categories" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Categories</span>
+                    </a>
+                    <a href="#about" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                </div>
+
+                <!-- User Actions -->
+                <div class="nav-actions">
+                    <!-- Search Button -->
+                    <button class="action-btn search-toggle" id="search-toggle">
+                        <i class="fas fa-search"></i>
+                    </button>
+
+                    <!-- Cart Button -->
+                    <button class="action-btn cart-toggle" id="cart-toggle">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" id="cart-badge">0</span>
+                    </button>
+
+                    <!-- Guest Actions -->
+                    <div class="auth-actions" data-guest>
+                        <a href="login.html" class="btn btn-outline">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                        <a href="register.html" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Sign Up</span>
+                        </a>
+                    </div>
+
+                    <!-- Authenticated User -->
+                    <div class="user-menu" data-auth>
+                        <div class="user-profile" id="user-profile">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="user-dropdown">
+                            <a href="library.html" class="dropdown-item">
+                                <i class="fas fa-books"></i>
+                                <span>My Library</span>
+                            </a>
+                            <a href="#profile" class="dropdown-item">
+                                <i class="fas fa-user-edit"></i>
+                                <span>Profile</span>
+                            </a>
+                            <a href="#orders" class="dropdown-item">
+                                <i class="fas fa-receipt"></i>
+                                <span>Order History</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-btn" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-toggle" id="mobile-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-container">
+            <div class="search-header">
+                <h3>Search Books</h3>
+                <button class="search-close" id="search-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="search-form">
+                <input type="text" id="search-input" class="search-input" placeholder="Search for books, authors, or topics...">
+                <button class="search-submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="search-suggestions" id="search-suggestions">
+                <!-- Search suggestions akan di-populate oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="cart-close" id="cart-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items-list">
+                <!-- Cart items akan di-populate oleh JavaScript -->
+            </div>
+            <div class="cart-summary">
+                <div class="cart-total">
+                    <span>Total: </span>
+                    <span id="cart-total">Rp 0</span>
+                </div>
+                <button class="btn btn-primary btn-block" id="checkout-btn">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Checkout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            Discover Your Next
+                            <span class="gradient-text">Great Read</span>
+                        </h1>
+                        <p class="hero-description">
+                            Access thousands of digital books instantly. Read online or download PDF books from bestselling authors and emerging talents. Start your reading journey today.
+                        </p>
+                        <div class="hero-actions">
+                            <a href="#books" class="btn btn-primary btn-large">
+                                <i class="fas fa-book-open"></i>
+                                <span>Browse Books</span>
+                            </a>
+                            <a href="register.html" class="btn btn-outline btn-large" data-guest>
+                                <i class="fas fa-user-plus"></i>
+                                <span>Get Started Free</span>
+                            </a>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="total-books-stat">10,000+</span>
+                                <span class="stat-label">Digital Books</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="total-users-stat">50,000+</span>
+                                <span class="stat-label">Happy Readers</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="total-downloads-stat">1M+</span>
+                                <span class="stat-label">Downloads</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="hero-books">
+                            <div class="floating-book book-1">
+                                <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=200&h=300&fit=crop" alt="Book 1">
+                            </div>
+                            <div class="floating-book book-2">
+                                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=300&fit=crop" alt="Book 2">
+                            </div>
+                            <div class="floating-book book-3">
+                                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&h=300&fit=crop" alt="Book 3">
+                            </div>
+                            <div class="floating-book book-4">
+                                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=200&h=300&fit=crop" alt="Book 4">
+                            </div>
+                        </div>
+                        <div class="hero-gradient"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Why Choose Our Digital Library?</h2>
+                    <p class="section-description">Experience the future of reading with our premium digital bookstore</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3 class="feature-title">Instant Download</h3>
+                        <p class="feature-description">Download books instantly after purchase. No waiting, no shipping fees.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Read Anywhere</h3>
+                        <p class="feature-description">Access your books on any device - phone, tablet, or computer.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3 class="feature-title">Smart Search</h3>
+                        <p class="feature-description">Find exactly what you're looking for with our intelligent search system.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Secure Payment</h3>
+                        <p class="feature-description">Safe and secure transactions with multiple payment options.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories" id="categories">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Browse by Category</h2>
+                    <p class="section-description">Discover books across all genres and topics</p>
+                </div>
+                <div class="categories-grid" id="categories-grid">
+                    <!-- Categories akan di-populate oleh JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Books Section -->
+        <section class="books" id="books">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Books</h2>
+                    <p class="section-description">Handpicked selections from our vast digital library</p>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div class="filter-left">
+                        <select id="category-filter" class="filter-select">
+                            <option value="">All Categories</option>
+                            <!-- Options akan di-populate oleh JavaScript -->
+                        </select>
+                        <select id="sort-filter" class="filter-select">
+                            <option value="created_at_desc">Newest First</option>
+                            <option value="created_at_asc">Oldest First</option>
+                            <option value="title_asc">Title A-Z</option>
+                            <option value="title_desc">Title Z-A</option>
+                            <option value="price_asc">Price Low to High</option>
+                            <option value="price_desc">Price High to Low</option>
+                        </select>
+                    </div>
+                    <div class="filter-right">
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="grid">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button class="view-btn" data-view="list">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Books Grid -->
+                <div class="books-grid" id="books-container">
+                    <!-- Books akan di-populate oleh JavaScript -->
+                </div>
+
+                <!-- Load More Button -->
+                <div class="load-more-container">
+                    <button class="btn btn-outline btn-large" id="load-more-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>Load More Books</span>
+                    </button>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container" id="pagination-container">
+                    <!-- Pagination akan di-populate oleh JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Section -->
+        <section class="newsletter">
+            <div class="container">
+                <div class="newsletter-content">
+                    <div class="newsletter-text">
+                        <h2 class="newsletter-title">Stay Updated</h2>
+                        <p class="newsletter-description">Get notified about new releases, special offers, and exclusive content.</p>
+                    </div>
+                    <form class="newsletter-form" id="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Subscribe</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <div class="brand">
+                            <div class="brand-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <span class="brand-text">PDF Bookstore</span>
+                        </div>
+                        <p class="footer-description">
+                            Your premier destination for digital books. Discover, read, and enjoy thousands of titles instantly.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#books">Browse Books</a></li>
+                        <li><a href="#categories">Categories</a></li>
+                        <li><a href="library.html" data-auth>My Library</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-title">Account</h3>
+                    <ul class="footer-links">
+                        <li><a href="login.html" data-guest>Login</a></li>
+                        <li><a href="register.html" data-guest>Sign Up</a></li>
+                        <li><a href="#profile" data-auth>My Profile</a></li>
+                        <li><a href="#orders" data-auth>Order History</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-title">Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2025 PDF Bookstore. All rights reserved. Built with ❤️ by Syahdinata Dwi Fachril</p>
+                </div>
+                <div class="footer-links-bottom">
+                    <a href="#terms">Terms of Service</a>
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#cookies">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Initialize application saat DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // BookstoreApp sudah di-initialize di app.js
+            console.log('PDF Bookstore loaded successfully');
+        });
+    </script>
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+    <script src="js/mobile-nav.js"></script>
+</body>
+
+</html>
