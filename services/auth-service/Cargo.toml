@@ -1,0 +1,59 @@
+# /pdf-bookstore/services/auth-service/Cargo.toml
+
+[package]
+name = "auth-service"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Core dependencies dari workspace
+tokio = { workspace = true }
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+sqlx = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true, features = ["v4", "serde"] }
+dotenvy = { workspace = true }
+jsonwebtoken = { workspace = true }
+argon2 = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+validator = { workspace = true }
+thiserror = { workspace = true }
+hyper = { workspace = true }
+reqwest = { workspace = true, features = ["json"] }
+tokio-cron-scheduler = { workspace = true }
+lazy_static = { workspace = true }
+
+# Additional dependencies untuk auth service
+rand = { workspace = true }
+hex = { workspace = true }
+base64 = { workspace = true }
+sha2 = { workspace = true }
+regex = { workspace = true }
+hmac = { workspace = true }
+
+# OAuth2 dependencies
+oauth2 = "4.4"
+openidconnect = "3.5"
+
+# Additional OAuth dependencies
+anyhow = { workspace = true }
+urlencoding = "2.1"
+
+# Redis for OAuth state management (use workspace version)
+redis = { workspace = true }
+
+# Testing dependencies
+utoipa = { workspace = true }
+utoipa-swagger-ui = { workspace = true }
+utoipa-redoc = { workspace = true }
+
+# Email service dependencies
+lettre = { workspace = true }
+
+# Additional crypto for PKCE
+sha256 = "1.5"
