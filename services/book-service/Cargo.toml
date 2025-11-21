@@ -1,0 +1,41 @@
+# /pdf-bookstore/services/book-service/Cargo.toml
+
+[package]
+name = "book-service"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Core dependencies dari workspace
+tokio = { workspace = true }
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+sqlx = { workspace = true }
+bigdecimal = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+dotenvy = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+validator = { workspace = true }
+thiserror = { workspace = true }
+hyper = { workspace = true }
+reqwest = { workspace = true }
+rand = { workspace = true }
+
+# File upload dependencies
+multer = { workspace = true }
+tokio-util = { workspace = true }
+
+# Authentication dependencies
+jsonwebtoken = { workspace = true }
+
+# Crypto untuk file validation
+sha2 = { workspace = true }
+hex = { workspace = true }
+regex = { workspace = true }
+hmac = { workspace = true }
+
