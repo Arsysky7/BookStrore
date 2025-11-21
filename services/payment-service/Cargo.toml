@@ -1,0 +1,64 @@
+# /pdf-bookstore/services/payment-service/Cargo.toml
+# Dependencies untuk payment service enterprise
+
+[package]
+name = "payment-service"
+version = "1.0.0"
+edition = "2021"
+description = "Enterprise Payment Service untuk PDF Bookstore"
+
+
+[dependencies]
+# Core dependencies dari workspace
+tokio = { workspace = true }
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+sqlx = { workspace = true }
+bigdecimal = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+dotenvy = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+validator = { workspace = true }
+thiserror = { workspace = true }
+hyper = { workspace = true }
+reqwest = { workspace = true }
+redis = { workspace = true }
+async-trait = { workspace = true }
+lazy_static = { workspace = true }
+# Background job scheduler untuk cleanup
+tokio-cron-scheduler = { workspace = true }
+
+# Authentication dependencies untuk JWT
+jsonwebtoken = { workspace = true }
+
+# Crypto dependencies untuk payment security
+sha2 = { workspace = true }
+base64 = { workspace = true }
+hex = { workspace = true }
+rand = { workspace = true }
+
+# Pattern matching dan utilities
+regex = { workspace = true }
+once_cell = { workspace = true }
+
+# Testing dependencies
+tokio-test = { workspace = true }
+mockito = { workspace = true }
+serial_test = { workspace = true }
+
+[profile.release]
+# Optimizations untuk production
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.dev]
+# Faster compilation untuk development
+opt-level = 0
+debug = true
