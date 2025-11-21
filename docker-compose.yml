@@ -1,0 +1,412 @@
+# /pdf-bookstore/docker-compose.yml
+# Enhanced Docker Compose untuk PDF Bookstore Microservices
+# Version: Production-Ready
+
+version: '3.8'
+
+services:
+  # ========================= DATABASE =========================
+  postgres:
+    image: postgres:16-alpine
+    container_name: pdf-bookstore-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bookstore
+      POSTGRES_USER: bookstore_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-Bookstore_987}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      # Performance tuning
+      POSTGRES_MAX_CONNECTIONS: 200
+      POSTGRES_SHARED_BUFFERS: 256MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 1GB
+      POSTGRES_MAINTENANCE_WORK_MEM: 128MB
+      POSTGRES_CHECKPOINT_COMPLETION_TARGET: 0.9
+      POSTGRES_WAL_BUFFERS: 16MB
+      POSTGRES_DEFAULT_STATISTICS_TARGET: 100
+      POSTGRES_RANDOM_PAGE_COST: 1.1
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./database/migrations:/docker-entrypoint-initdb.d/migrations:ro
+      - ./database/seeds:/docker-entrypoint-initdb.d/seeds:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - bookstore-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bookstore_user -d bookstore"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ========================= REDIS CACHE =========================
+  redis:
+    image: redis:7-alpine
+    container_name: pdf-bookstore-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru --appendonly yes
+    ports:
+      - "6379:6379"
+    networks:
+      - bookstore-network
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ========================= AUTH SERVICE =========================
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+      args:
+        - BUILD_MODE=${BUILD_MODE:-release}
+    container_name: pdf-bookstore-auth
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: postgresql://bookstore_user:${DB_PASSWORD:-Bookstore_987}@postgres:5432/bookstore
+      DATABASE_MAX_CONNECTIONS: 10
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-here}
+      JWT_EXPIRES_IN: 24h
+      JWT_ISSUER: bookstore-auth-service
+      JWT_AUDIENCE: bookstore-app
+      # Security
+      PASSWORD_PEPPER: ${PASSWORD_PEPPER:-bookstore_pepper_super_secret_key}
+      # Server
+      RUST_LOG: ${RUST_LOG:-info}
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 3001
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      # Redis
+      REDIS_URL: redis://redis:6379
+      # Service URLs
+      BOOK_SERVICE_URL: http://book-service:3002
+      PAYMENT_SERVICE_URL: http://payment-service:3003
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - bookstore-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # ========================= BOOK SERVICE =========================
+  book-service:
+    build:
+      context: ./services/book-service
+      dockerfile: Dockerfile
+      args:
+        - BUILD_MODE=${BUILD_MODE:-release}
+    container_name: pdf-bookstore-books
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: postgresql://bookstore_user:${DB_PASSWORD:-Bookstore_987}@postgres:5432/bookstore
+      DATABASE_MAX_CONNECTIONS: 10
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-here}
+      # Server
+      RUST_LOG: ${RUST_LOG:-info}
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 3002
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      # Storage
+      STORAGE_PATH: /app/storage
+      UPLOAD_DIR: /app/storage
+      MAX_FILE_SIZE_MB: 50
+      MAX_IMAGE_SIZE_MB: 10
+      # Redis
+      REDIS_URL: redis://redis:6379
+      # Service URLs
+      AUTH_SERVICE_URL: http://auth-service:3001
+      PAYMENT_SERVICE_URL: http://payment-service:3003
+      # File Security
+      ENABLE_VIRUS_SCANNING: ${ENABLE_VIRUS_SCANNING:-false}
+      SECURE_DELETE: ${SECURE_DELETE:-false}
+    ports:
+      - "3002:3002"
+    volumes:
+      - book_storage:/app/storage
+      - ./storage/temp:/app/storage/temp
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    networks:
+      - bookstore-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # ========================= PAYMENT SERVICE =========================
+  payment-service:
+    build:
+      context: ./services/payment-service
+      dockerfile: Dockerfile
+      args:
+        - BUILD_MODE=${BUILD_MODE:-release}
+    container_name: pdf-bookstore-payments
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: postgresql://bookstore_user:${DB_PASSWORD:-Bookstore_987}@postgres:5432/bookstore
+      DATABASE_MAX_CONNECTIONS: 10
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-here}
+      # Midtrans
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY:-SB-Mid-server-test}
+      MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY:-SB-Mid-client-test}
+      MIDTRANS_IS_PRODUCTION: ${MIDTRANS_IS_PRODUCTION:-false}
+      MIDTRANS_ENVIRONMENT: ${MIDTRANS_ENVIRONMENT:-sandbox}
+      # Server
+      RUST_LOG: ${RUST_LOG:-info}
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 3003
+      PAYMENT_SERVICE_PORT: 3003
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      # Redis
+      REDIS_URL: redis://redis:6379
+      # Service URLs
+      AUTH_SERVICE_URL: http://auth-service:3001
+      BOOK_SERVICE_URL: http://book-service:3002
+      FRONTEND_BASE_URL: ${FRONTEND_BASE_URL:-http://localhost}
+      # Webhook
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-your-webhook-secret}
+      PAYMENT_WEBHOOK_TIMEOUT_SECONDS: 30
+      PAYMENT_MAX_RETRY_ATTEMPTS: 3
+    ports:
+      - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+      book-service:
+        condition: service_healthy
+    networks:
+      - bookstore-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # ========================= FRONTEND (OPTIONAL) =========================
+  # Uncomment jika sudah ada frontend
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: pdf-bookstore-frontend
+  #   restart: unless-stopped
+  #   environment:
+  #     REACT_APP_API_URL: http://nginx-lb
+  #     REACT_APP_AUTH_SERVICE: http://localhost:3001
+  #     REACT_APP_BOOK_SERVICE: http://localhost:3002
+  #     REACT_APP_PAYMENT_SERVICE: http://localhost:3003
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   depends_on:
+  #     - auth-service
+  #     - book-service
+  #     - payment-service
+  #   networks:
+  #     - bookstore-network
+  #   volumes:
+  #     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+  # ========================= ADMIN PANEL (OPTIONAL) =========================
+  # Uncomment jika sudah ada admin panel
+  # admin-panel:
+  #   build:
+  #     context: ./admin-panel
+  #     dockerfile: Dockerfile
+  #   container_name: pdf-bookstore-admin
+  #   restart: unless-stopped
+  #   environment:
+  #     REACT_APP_API_URL: http://nginx-lb
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - auth-service
+  #     - book-service
+  #     - payment-service
+  #   networks:
+  #     - bookstore-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+  # ========================= NGINX LOAD BALANCER =========================
+  nginx-lb:
+    image: nginx:1.25-alpine
+    container_name: pdf-bookstore-lb
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - auth-service
+      - book-service
+      - payment-service
+    networks:
+      - bookstore-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ========================= MONITORING (OPTIONAL) =========================
+  # Uncomment untuk monitoring
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: pdf-bookstore-prometheus
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #     - prometheus_data:/prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - bookstore-network
+  
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: pdf-bookstore-grafana
+  #   restart: unless-stopped
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - bookstore-network
+
+# ========================= VOLUMES =========================
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/postgres
+  
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/redis
+  
+  book_storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/storage
+  
+  # Uncomment untuk monitoring
+  # prometheus_data:
+  #   driver: local
+  # grafana_data:
+  #   driver: local
+
+# ========================= NETWORKS =========================
+networks:
+  bookstore-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
